@@ -14,6 +14,7 @@ clean:
 	rm -f MetPred
 	rm -f mtx_pro
 	rm -f returnNetCut.class
+	rm -f org/ucl/conf/ConfAssign.class
 
 install:
 	cp mtx_pro ../bin
