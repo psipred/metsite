@@ -20,7 +20,6 @@ install:
 	cp mtx_pro ../bin
 	cp seedSiteFind ../bin
 	cp MetPred ../bin
-	cp returnNetCut.class ../bin
 
 seedSiteFind:
 	$(CPP) $(CFLAGS) seedSiteFind.cc $(LIBS) -o seedSiteFind
