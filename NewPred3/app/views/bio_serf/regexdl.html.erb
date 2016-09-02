@@ -1,8 +1,0 @@
-<%= form_tag("/do_regexdl", :method => "get") do %>
-  <p><%= pretty_error_messages_for :job %></p>
-
-<p>Job Name Filter:
-  <%= text_field_tag("filter", "", :class => 'form_input')%> </p>
-
-  <p><%= submit_tag("Download", :class => 'form_input')%></p>
-<% end %>

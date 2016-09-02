@@ -1,6 +1,0 @@
-<%  @funcatdata = @funcat_data
-@uniprotdata = @uniprot_data
-@korthodata = @kortho_data
-@kpathwaydata = @kpathway_data %>
-<h2>CATH DOMAIN : <a href="http://www.cathdb.info/domain/<%= @structure_code %>"><%= @structure_code %></a></h2>
-<%= render :partial => 'layouts/function_tables', :locals => {:bgcolor => "#ccc"} %>

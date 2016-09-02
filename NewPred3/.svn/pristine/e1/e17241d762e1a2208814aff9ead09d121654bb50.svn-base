@@ -1,8 +1,0 @@
-<h1>TestHarness#import_models</h1>
-<p>Find me in app/views/test_harness/import_models.rhtml</p>
-
-<% form_tag(:action => "do_import_models") do %>
-  <p>Models Root Directory: <br>
-  <%= text_field_tag("model_dir", "/home/sward/CASP7_benchmark/models/", :size => "75")%> </p>
-  <%= submit_tag("Parse Directory")%>
-<% end %>

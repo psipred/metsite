@@ -1,2 +1,0 @@
-module TestHarness::DataManagerHelper
-end

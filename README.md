@@ -60,9 +60,8 @@ runt Met Pred, (i,e: 0.182). Lower case metals this time! And provide a path for
 
 `> ./bin/MetPred 1IAR.pdb.DATA cu 0.182 1IAR_MetPred.pdb A ./data/`
 
-
 10)
-As an alternatve to steps 8 and 9 you can run the python script metpred.py which
-wraps these two steps together. Basically you pass it the options the previous 2 commands need
+As an alternatIve to steps 8 and 9 you can run the python script metpred.py which
+wraps these two steps together. Basically you pass it the options the previous 2 commands need. Note that the classpath must have full canonical paths, and you must provide a location for the metpred binaries
 
-`metpred.py src/org/ucl/conf/:srcsrc/org/ucl/conf/:src CU 1 1IAR.pdb.DATA 1IAR_MetPred.pdb A ./data/`
+`python ./bin/metpred.py /Users/dbuchan/Code/metsite/src/org/ucl/conf/:/Users/dbuchan/Code/metsite/src/ CU 1 1IAR.pdb.DATA 1IAR_MetPred.pdb A ./bin/ ./data/`

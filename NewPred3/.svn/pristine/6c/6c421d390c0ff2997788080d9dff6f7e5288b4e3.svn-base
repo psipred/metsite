@@ -1,2 +1,0 @@
-module TestHarness::RunManagerHelper
-end
