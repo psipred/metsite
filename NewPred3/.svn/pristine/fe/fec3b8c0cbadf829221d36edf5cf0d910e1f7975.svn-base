@@ -1,0 +1,19 @@
+<% hostname = self.request.host  %>
+<table>
+  <% results.each do |job_state|
+     if (job_state.status_class == 29 )%>
+      <tr class="form_subtitle"><td><h4>DomPred Downloads</h4></td></tr>
+      <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">Download PSI-BLAST data table</a></h4></td></tr>
+   <% end
+   end
+   results.each do |job_state|
+     if (job_state.status_class == 26 ) && (job_state.content_name =~ /\.blast\.bls\.gz/) %>
+      <tr><td><h4><a href="http://<%= hostname %>/genthreader_output/<%= job_state.content_name %>">Download PSI-BLAST output</a></h4></td></tr>
+   <% end
+   end
+   results.each do |job_state|
+  if (job_state.status_class == 27 )%>
+    <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">Download DOMSSea table as plain text</a></h4></td></tr>
+  <% end
+   end %>
+</table>

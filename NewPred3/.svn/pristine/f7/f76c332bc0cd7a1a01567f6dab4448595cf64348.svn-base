@@ -1,0 +1,31 @@
+  <table>
+  <%
+  method = "getresultattached"
+  if @genome3d == 1
+    method = "getresultattachedgenome3d"
+  end
+  %>
+   
+  <% @job_results.each do |job_state|
+      if job_state.status_class == 11 %>
+        <tr class="form_subtitle"><td><h4>Psipred Downloads</h4></td></tr>
+        <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => method, :id => job_state.id) %>">PSIPRED results in plain text format</a></h4></td></tr>
+     <% end
+   end 
+     @job_results.each do |job_state|
+      if job_state.status_class == 57 %>
+        <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => method, :id => job_state.id) %>">PSIPRED raw scores in plain text format</a></h4></td></tr>
+     <% end
+   end
+     @job_results.each do |job_state|
+     if (job_state.status_class == 13)
+         if job_state.content_name !~ /\.diso\./ %>
+    <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => method, :id => job_state.id) %>">PDF version of the PSIPRED diagram</a></h4></td></tr>
+       <% end
+      elsif (job_state.status_class == 12)
+        if job_state.content_name !~ /\.diso\./ %>
+    <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => method, :id => job_state.id) %>">Postscript version of the PSIPRED diagram</a></h4></td></tr>
+     <% end
+    end
+   end %>
+     </table>

@@ -1,0 +1,33 @@
+<title>Bio_serf job: <%= @job.name %></title>
+<script src="../../../javascripts/Jmol.js" type="text/javascript"></script>
+<%= button_to "Download", { :action => 'download_job', :id => @job.id, :class => "form_input" }%>
+
+<%= render :partial => 'seq',
+  :locals => {:job => @job, :bgcolor => "#ccc"} %>
+
+<% if (@overrides) %>
+  <%= render :partial => 'overrides',
+    :locals => {:overrides => @overrides, :bgcolor => "#ccc"} %>
+<% end %>
+
+<% if (!@job_results)%>
+  No Job Status Updates yet...<br>
+<% end %>
+  <% @job_results.each do |job_state| %>
+    <% if (job_state.status_class == 6) %>
+      <%= render :partial => 'pdb_result',
+        :locals => {:pdb_result => job_state, :bgcolor => "#ccc"} %>
+    <% else %>
+      <% if ((job_state.status_class == 43) || (job_state.status_class == 20 || (job_state.status_class == 32) || (job_state.status_class == 21) || (job_state.status_class == 14))) %>
+        <%= render :partial => 'image_result',
+          :locals => { :image => job_state, :bgcolor => "#ccc"} %>
+      <% else %>
+        <% if ((job_state.status_class != 5) && (job_state.status_class != 7)) %>
+          <%= render :partial => 'log_result',
+            :locals => {:log_result => job_state, :bgcolor => "#ccc"} %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+<%= button_to "Download", { :action => 'download_job', :id => @job.id, :class => "form_input" }%>

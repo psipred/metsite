@@ -1,0 +1,206 @@
+<% hostname = self.request.host %>
+<% if (!@job_results)%>
+  No Job Status Updates yet...<br />
+<% end %>
+<% links="" %>
+
+<% results_copy = @job_results %>
+
+  <h1>Sequence analysis results for job: <%= @job.name %></h1>
+  <h1>ID: <%= @job.UUID %></h1>
+<div id="tabs">
+  <ul>
+    <% if (@job.program_psipred == 1 || @job.program_svmmemsat == 1 || @job.program_genthreader == 1 || @job.program_domthreader == 1 || @job.program_mgenthreader == 1 || @job.program_mempack || @job.program_domserf == 1) && @genome3d == 0 %>
+    <li id="tabs-11-tab"><a href="#tabs-11">Summary</a></li>
+    <% end 
+    if @job.program_bioserf == 1 %>
+    <li id="tabs-12-tab"><a href="#tabs-12">BioSerf</a></li>
+    <% end
+    if @job.program_domserf == 1 %>
+    <li id="tabs-23-tab"><a href="#tabs-23">DomSerf</a></li>
+    <% end
+    if @job.program_disopred == 1 %>
+    <li id="tabs-13-tab"><a href="#tabs-13">DISOPRED</a></li>
+    <% end
+    if @job.program_dompred == 1 %>
+    <li id="tabs-14-tab"><a href="#tabs-14">DomPRED</a></li>
+    <% end
+    if @job.program_ffpred == 1 %>
+    <li id="tabs-15-tab"><a href="#tabs-15">FFPred</a></li>
+    <% end
+    if @job.program_genthreader == 1 %>
+    <li id="tabs-16-tab"><a href="#tabs-16">GenTHREADER</a></li>
+    <% end
+    if @job.program_svmmemsat == 1 || @job.program_mempack == 1 %>
+    <li id="tabs-17-tab"><a href="#tabs-17">MEMSAT-SVM</a></li>
+    <% end
+    if @job.program_mempack == 1 %>
+    <li id="tabs-18-tab"><a href="#tabs-18">MEMPACK</a></li>
+    <% end
+    if @job.program_domthreader == 1 && @genome3d == 0 %>
+    <li id="tabs-19-tab"><a href="#tabs-19">pDomTHREADER</a></li>
+    <% end
+    if @job.program_mgenthreader == 1 %>
+    <li id="tabs-20-tab"><a href="#tabs-20">pGenTHREADER</a></li>
+    <% end
+    if @job.program_psipred == 1 %>
+    <li id="tabs-21-tab"><a href="#tabs-21">PSIPRED</a></li>
+    <% end %>
+    <li id="tabs-22-tab"><a href="#tabs-22">Downloads</a></li>
+  </ul>
+
+  <% if @job.program_bioserf == 1 || @job.program_domserf == 1 %>
+    <script src="../../javascripts/Jmol.js" type="text/javascript"></script>
+  <% end %>
+    
+  <% if @job.program_genthreader == 1 || @job.program_domthreader == 1 || @job.program_mgenthreader == 1 %>
+<applet name="JalviewLite"  code="jalview.bin.JalviewLite"
+archive="http://<%= hostname %>/jalview/jalviewApplet.jar" width="0" height="0">
+<param name="showbutton" value="false"/>
+<param name="showFeatureSettings" value="true"/>
+<param name="wrap" value="true"/>
+<param name="showAnnotation" value="false"/>
+<param name="windowHeight" value="500"/>
+<param name="windowWidth" value="650"/>
+<param name="showFullId" value="false"/>
+<param name="RGB"  value="FFFFFF"/>
+</applet>
+<% end %>
+
+  <div id="tabs-11">
+    <%= render :partial => 'layouts/backend_errors', :locals => {:results => @job_results, :hostname => hostname} %>
+  <% if @job.program_psipred == 1 || @job.program_svmmemsat == 1 || @job.program_disopred == 1 || @job.program_dompred == 1 || @job.program_ffpred == 1 || @job.program_mempack == 1%>
+      <%= render :partial => 'layouts/aminoacid_map', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if (@job.program_psipred == 1 || @job.program_svmmemsat == 1 || @job.program_mempack == 1) && (@job.program_genthreader == 1 || @job.program_domthreader == 1 || @job.program_mgenthreader == 1) %>
+    <% end %>
+    <% if @genome3d == 0 %>
+  	<%= render :partial => 'layouts/sequence_selector', :locals => {:results => @job_results, :seq => @job.QueryString, :hostname => hostname} %>
+  	<% end %>
+  <% if (@job.program_genthreader == 1 || @job.program_domthreader == 1 || @job.program_mgenthreader == 1) && @genome3d == 0 %>
+     <br />
+     <% @job_results.each do |job_state|
+      if job_state.status_class == 9 %> 
+        <%= render :partial => 'layouts/alignment_diagram', :locals => {:results => job_state, :seq => @job.QueryString, :gen_control => 0, :hostname => hostname} %>
+      <% elsif job_state.status_class == 77 %>
+        <%= render :partial => 'layouts/alignment_diagram', :locals => {:results => job_state, :seq => @job.QueryString, :gen_control => 1, :hostname => hostname} %>
+      <% elsif job_state.status_class == 10 %>
+        <%= render :partial => 'layouts/alignment_diagram', :locals => {:results => job_state, :seq => @job.QueryString, :gen_control => 2, :hostname => hostname} %>
+      <%  end
+      end
+  end %>
+   
+  </div>
+
+  <% if @job.program_bioserf == 1 %>
+  <div id="tabs-12">
+    <%= render :partial => 'layouts/bioserf_model', :locals => {:results => @job_results, :hostname => hostname} %>
+  </div>
+  <% end %>
+  
+  <% if @job.program_domserf == 1 %>
+  <div id="tabs-23">
+  	<%= render :partial => 'layouts/domserf_model', :locals => {:results => @job_results, :hostname => hostname} %>	
+  </div>
+  <% end %>
+
+  <% if @job.program_disopred == 1 %>
+  <div id="tabs-13">
+    <%= render :partial => 'layouts/disopred_images', :locals => {:results => @job_results, :hostname => hostname} %>
+  </div>
+  <% end %>
+
+  <% if @job.program_dompred == 1 %>
+  <div id="tabs-14">
+    <%= render :partial => 'layouts/dompred_images', :locals => {:results => @job_results, :hostname => hostname} %>
+  </div>
+  <% end %>
+
+  <% if @job.program_ffpred == 1 %>
+  <div id="tabs-15">
+    <%= render :partial => 'layouts/ffpred_data', :locals => {:results => @job_results, :hostname => hostname} %>
+  </div>
+  <% end %>
+
+  <% if @job.program_genthreader == 1 %>
+  <div id="tabs-16">
+    <%= render :partial => 'layouts/genthreader_table', :locals => {:results => @job_results, :hostname => hostname,:gen_control => 0} %>
+  </div>
+  <% end %>
+
+  <% if @job.program_svmmemsat == 1 || @job.program_mempack == 1 %>
+  <div id="tabs-17">
+    <!-- MEMSATSVM images section -->
+    <%= render :partial => 'layouts/memsatsvm_images', :locals => {:results => @job_results, :hostname => hostname} %>
+  </div>
+  <% end %>
+
+  <% if @job.program_mempack == 1 %>
+  <div id="tabs-18">
+    <%= render :partial => 'layouts/mempack_images', :locals => {:results => @job_results, :hostname => hostname} %>
+  </div>
+  <% end %>
+
+  <% if @job.program_domthreader == 1 && @genome3d == 0 %>
+  <div id="tabs-19">
+    <%= render :partial => 'layouts/genthreader_table', :locals => {:results => @job_results, :hostname => hostname,:gen_control => 2} %>
+  </div>
+  <% end %>
+
+  <% if @job.program_mgenthreader == 1 %>
+  <div id="tabs-20">
+    <%= render :partial => 'layouts/genthreader_table', :locals => {:results => @job_results, :hostname => hostname,:gen_control => 1} %>
+  </div>
+  <% end %>
+  
+  <% if @job.program_psipred == 1 %>
+  <div id="tabs-21">
+    <!-- PSIPRED images section -->
+    <%= render :partial => 'layouts/psipred_images', :locals => {:results => @job_results, :hostname => hostname} %>
+  </div>
+  <% end %>
+  
+  <div id="tabs-22">
+    <!-- Downloads Section -->
+    <% if @genome3d == 0 %>
+    <table>
+      <tr class="form_subtitle"><td><h4>Download everything</h4></td></tr>
+      <tr><td><h4><a href="<%= url_for :controller => "psipred", :action => "buildzip", :id => @job.id %>">Download a zip of everything (may take some minutes to prepare)</a></h4></td></tr>
+    </table>
+    <% end %>
+    <% if @job.program_psipred == 1 %>
+    <%= render :partial => 'layouts/psipred_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_svmmemsat == 1 || @job.program_mempack == 1 %>
+    <%= render :partial => 'layouts/memsatsvm_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_mempack == 1 %>
+    <%= render :partial => 'layouts/mempack_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_disopred == 1 %>
+    <%= render :partial => 'layouts/disopred_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_dompred == 1 %>
+    <%= render :partial => 'layouts/dompred_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_genthreader == 1 %>
+    <%= render :partial => 'layouts/genthreader_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_mgenthreader == 1 %>
+    <%= render :partial => 'layouts/mgenthreader_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_domthreader == 1 %>
+    <%= render :partial => 'layouts/domthreader_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_bioserf == 1 %>
+    <%= render :partial => 'layouts/bioserf_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_domserf == 1 %>
+    <%= render :partial => 'layouts/domserf_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_ffpred == 1 %>
+    <%= render :partial => 'layouts/ffpred_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+  </div>
+  
+</div><!-- end tabs div -->

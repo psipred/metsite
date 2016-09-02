@@ -1,0 +1,29 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+<head>
+  <title>Test Run for <%= @testrun.name %> </title>
+</head>
+<META http-equiv="refresh" content="60">
+<body>
+  <strong>Job Type: </strong> <%= @testrun.job_type %><br>
+  <strong>Description: </strong> <%= @testrun.description %><br>
+  <strong>Configuration: </strong> <%= link_to @testrun.configuration.name,  
+    { :action => 'show', :controller => '/configurations', 
+    :id => @testrun.configuration.id } %><br>
+  <strong>Test Set: </strong> <%= link_to @testrun.test_set.name, 
+    { :action => 'list_test_sets', :controller => 'data_manager' } %><br>
+  <strong>Created at: </strong> <%= @testrun.created_at %><br>
+  <br>
+  <strong>Current Status:</strong><br>
+  <table width="100%">
+    <% for pending_run in @pending_runs %>
+      <tr style="background: <%= cycle("#ccc","") %>;">
+      <td><%= "#{pending_run.name} has #{pending_run.jobs.find(:all, :conditions => "state = 4").length} complete jobs out of #{pending_run.jobs.count}"%>
+        <%=button_to "Download", { :action => 'download_run', :id => pending_run.id } %></td>
+<% end%>
+  </table><br>
+  <%= button_to "Queue All Jobs", { :action => 'queue_run', :id => @testrun.id } %>
+  
+</body>

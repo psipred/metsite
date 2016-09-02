@@ -1,0 +1,61 @@
+<%  #print out the schematic diagram if you've found them
+  hDiagramNames = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
+   results.each do |job_state|
+     if (job_state.status_class == 21) #schematics
+      if job_state.content_name =~ /\.png/
+        hDiagramNames[21]["url"] = url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id)
+        hDiagramNames[21]["thumb"] = url_for(:controller => "bio_serf", :action => "getthumbnail", :id => job_state.thumbnails.first.id)
+        hDiagramNames[21]["id"] = job_state.id
+      end
+     end
+
+     if (job_state.status_class == 32) #MEMSAT-SVM Cartoon
+      if job_state.content_name =~ /\.png/
+        hDiagramNames[32]["url"] = url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id)
+        hDiagramNames[32]["thumb"] = url_for(:controller => "bio_serf", :action => "getthumbnail", :id => job_state.thumbnails.first.id)
+        hDiagramNames[32]["id"] = job_state.id
+      end
+     end
+     
+    if (job_state.status_class == 20) #MEMSAT3 Cartoon
+      if job_state.content_name =~ /\.png/
+        hDiagramNames[20]["url"] = url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id)
+        hDiagramNames[20]["thumb"] = url_for(:controller => "bio_serf", :action => "getthumbnail", :id => job_state.thumbnails.first.id)
+        hDiagramNames[20]["id"] = job_state.id
+      end
+     end
+
+   end
+  %>
+ <table>
+   <tr class="form_subtitle"><td><h1>MEMSAT-SVM Schematic</h1></td></tr>
+   <tr><td><a href="http://<%= hostname%>/<%= h(@service_name) %>/image/?imageid=<%= hDiagramNames[21]["id"] %>" target="_blank"><img class="thumbnail" src="<%= hDiagramNames[21]["thumb"] %>" /></a></td></tr>
+   <tr><td>Schematic diagram of the MEMSAT3 and MEMSATSVM predictions for the query sequence. Traces indicate the RAW outputs for the prediction SVMs. Dashed lines indicate the prediction threshold.<br />
+     PL: Pore lining residue<br />
+     SP: Signal peptide residue<br />
+     RE: Re-entrant helix residue<br />
+     iL/oL & H/L: Helix prediction<br /><br />
+     </td></tr>
+   <tr class="form_subtitle"><td><h4>MEMSAT-SVM Cartoon</h4></td></tr>
+   <tr><td><a href="http://<%= hostname%>/<%= h(@service_name) %>/image/?imageid=<%= hDiagramNames[32]["id"] %>" target="_blank"><img class="thumbnail" src="<%= hDiagramNames[32]["thumb"] %>" /></a></td></tr>
+   <tr class="form_subtitle"><td><h4>MEMSAT Cartoon</h4></td></tr>
+   <tr><td><a href="http://<%= hostname%>/<%= h(@service_name) %>/image/?imageid=<%= hDiagramNames[20]["id"] %>" target="_blank"><img class="thumbnail" src="<%= hDiagramNames[20]["thumb"] %>" /></a></td></tr>
+
+<% results.each do |job_state|
+     if (job_state.status_class == 19) %>
+    <tr><td><h1>MEMSAT-SVM Prediction</h1></td></tr>
+    <tr class="form_subtitle"><td><h4>Summary of MEMSAT-SVM Topology Analysis</h4></td></tr>
+        <%= render :partial => 'layouts/memsatsvm_result',
+                     :locals => {:log_result => job_state, :result_filter => @result_filter, :bgcolor => "#ccc"} %>
+  <% end
+   end
+ 
+   results.each do |job_state|
+     if (job_state.status_class == 16) %>
+    <tr><td><h1>MEMSAT3 Prediction</h1></td></tr>
+    <tr class="form_subtitle"><td><h4>Summary of MEMSAT3 Topology Analysis</h4></td></tr>
+        <%= render :partial => 'layouts/memsat_result',
+                     :locals => {:log_result => job_state, :result_filter => @result_filter, :bgcolor => "#ccc"} %>
+  <% end
+   end %>
+</table>

@@ -1,0 +1,53 @@
+<% if  @uniprotdata.domainId2UniprotIdsRecord.superfamily_id =~ /\d+\.\d+\.\d+\.\d+/ %>
+<h2>CATH SUPERFAMILY : <a href="http://www.cathdb.info/cathnode/<%= @uniprotdata.domainId2UniprotIdsRecord.superfamily_id %>"><%= @uniprotdata.domainId2UniprotIdsRecord.superfamily_id %></a></h2>
+<% else %>
+<h2>CATH SUPERFAMILY : Not fully CATH classified</h2>
+<% end %>
+<h3>Uniprot Data</h3>
+<table>
+<tr style="background: <%= cycle("#ccc","")%>;" ><td>Uniprot ID</td><td><a href="http://www.uniprot.org/uniprot/<%= @uniprotdata.domainId2UniprotIdsRecord.uniprot_acc %>"><%= @uniprotdata.domainId2UniprotIdsRecord.uniprot_acc %></a></td></tr>
+<tr style="background: <%= cycle("#ccc","")%>;" ><td>Gene Name</td><td><a href="http://www.uniprot.org/uniprot/?query=<%= @uniprotdata.domainId2UniprotIdsRecord.gene_name %>&sort=score"><%= @uniprotdata.domainId2UniprotIdsRecord.gene_name %></a></td></tr>
+<tr style="background: <%= cycle("#ccc","")%>;" ><td>Description</td><td><%= @uniprotdata.domainId2UniprotIdsRecord.description %></td><tr>
+<tr style="background: <%= cycle("#ccc","")%>;" ><td>Species</td><td><%= @uniprotdata.domainId2UniprotIdsRecord.species_name %></td></tr>
+</table>
+
+
+<% if defined? @funcatdata.domainId2FuncatsRecord %>
+  <h3>Funcat Data</h3>
+  <% for datum in @funcatdata.domainId2FuncatsRecord %>
+  <table>
+    <tr style="background: <%= cycle("#ccc","")%>;" ><td>Funcat ID</td><td><a href="http://mips.helmholtz-muenchen.de/cgi-bin/proj/funcatDB/search_advanced.pl?action=2&intern=&wert=<%= datum.funcat %>"><%= datum.funcat %></a></td></tr>
+    <tr style="background: <%= cycle("#ccc","")%>;" ><td>Description</td><td><%= datum.description %></td></tr>
+  </table><br />
+  <% end %>
+<% end %>
+
+
+<% if defined? @korthodata.domainId2KeggOrthologsRecord %>
+  <% if @korthodata.domainId2KeggOrthologsRecord.instance_of?(Array) %>
+    <% for datum in @korthodata.domainId2KeggOrthologsRecord %>
+      <h3>KEGG Ortholog</h3>
+      <table>
+      <tr style="background: <%= cycle("#ccc","")%>;" ><td>KEGG Ortholog</td><td><a href="http://www.genome.jp/dbget-bin/www_bget?ko+<%= datum.kegg_ortholog_entry %>"><%= datum.kegg_ortholog_entry %></a></td></tr>
+      <tr style="background: <%= cycle("#ccc","")%>;" ><td>Description</td><td><%= datum.kegg_ortholog_description %></td></tr>
+      </table>
+    <% end %>
+  <% else %>
+  <h3>KEGG Ortholog</h3>
+  <table>
+  <tr style="background: <%= cycle("#ccc","")%>;" ><td>KEGG Ortholog</td><td><a href="http://www.genome.jp/dbget-bin/www_bget?ko+<%= @korthodata.domainId2KeggOrthologsRecord.kegg_ortholog_entry %>"><%= @korthodata.domainId2KeggOrthologsRecord.kegg_ortholog_entry %></a></td></tr>
+  <tr style="background: <%= cycle("#ccc","")%>;" ><td>Description</td><td><%= @korthodata.domainId2KeggOrthologsRecord.kegg_ortholog_description %></td></tr>
+  </table>
+  <% end %>
+<% end %>
+
+
+<% if defined? @kpathwaydata.domainId2KeggPathwaysRecord %>
+  <h3>KEGG Pathways</h3>
+  <% for datum in @kpathwaydata.domainId2KeggPathwaysRecord %>
+    <table>
+    <tr style="background: <%= cycle("#ccc","")%>;" ><td>KEGG Pathway</td><td><a href="http://www.genome.jp/kegg-bin/show_pathway?<%= datum.kegg_pathway_code %>"><%= datum.kegg_pathway_code %></a></td></tr>
+    <tr style="background: <%= cycle("#ccc","")%>;" ><td>Description</td><td><%= datum.kegg_pathway_description %></td></tr>
+    </table><br />
+  <% end %>
+<% end %>

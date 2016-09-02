@@ -1,0 +1,13 @@
+<% form_tag(:action => "do_create_run") do %>
+  <p>New Test Run Name:<br>
+  <%= text_field_tag("name", nil, :size => "75")%> </p><br>
+  <p>Description:<br>
+  <%= text_field_tag("description", nil, :size => "75")%> </p><br>
+  <p>Job Type: <br>
+  <%= select_tag "job_type", "<option>BioSerf</option><option>NewPred</option><option>mGenThreader</option><option>TestPred</option>"%></p><br>
+  <p>Configuration:<br>
+  <%= select "new_test_run", "configuration_id", Configuration.find(:all).collect { |p| [p.name, p.id ] } %></p><br>
+  <p>Test Set: <br>
+  <%= select "new_test_run", "test_set_id", TestSet.find(:all).collect { |p| [p.name, p.id ] } %></p><br>
+  <%= submit_tag("Create Run")%>
+<% end %>

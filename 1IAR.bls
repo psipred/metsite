@@ -1,0 +1,89 @@
+PSIBLAST 2.2.31+
+
+
+Reference: Stephen F. Altschul, Thomas L. Madden, Alejandro A.
+Schaffer, Jinghui Zhang, Zheng Zhang, Webb Miller, and David J.
+Lipman (1997), "Gapped BLAST and PSI-BLAST: a new generation of
+protein database search programs", Nucleic Acids Res. 25:3389-3402.
+
+
+Reference for compositional score matrix adjustment: Stephen F.
+Altschul, John C. Wootton, E. Michael Gertz, Richa Agarwala,
+Aleksandr Morgulis, Alejandro A. Schaffer, and Yi-Kuo Yu (2005)
+"Protein database searches using compositionally adjusted
+substitution matrices", FEBS J. 272:5101-5109.
+
+
+Reference for composition-based statistics starting in round 2:
+Alejandro A. Schaffer, L. Aravind, Thomas L. Madden, Sergei
+Shavirin, John L. Spouge, Yuri I. Wolf, Eugene V. Koonin, and
+Stephen F. Altschul (2001), "Improving the accuracy of PSI-BLAST
+protein database searches with composition-based statistics and
+other refinements", Nucleic Acids Res. 29:2994-3005.
+
+
+
+Database: uniref_test.fasta
+           2,521 sequences; 969,502 total letters
+
+Results from round 1
+
+
+Query= ./example/1IAR.pdb| chain A
+
+Length=129
+                                                                      Score     E
+Sequences producing significant alignments:                          (Bits)  Value
+
+  UniRef90_P13917 Basic 7S globulin n=4 Tax=Soja RepID=7SB1_SOYBN     25.8    0.85 
+  UniRef90_Q9FT51 ABC transporter G family member 27 n=7 Tax=Came...  23.9    3.7  
+  UniRef90_A5VZY6 4-hydroxyproline 2-epimerase n=45 Tax=Proteobac...  23.9    3.8  
+
+
+
+Lambda      K        H        a         alpha
+   0.321    0.130    0.382    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 44915430
+Results from round 2
+
+
+Query= ./example/1IAR.pdb| chain A
+
+Length=129
+                                                                      Score     E
+Sequences producing significant alignments:                          (Bits)  Value
+
+  UniRef90_P13917 Basic 7S globulin n=4 Tax=Soja RepID=7SB1_SOYBN     25.8    0.76 
+  UniRef90_P93208 14-3-3 protein 2 n=13 Tax=eudicotyledons RepID=...  23.9    2.8  
+  UniRef90_Q9FT51 ABC transporter G family member 27 n=7 Tax=Came...  24.3    3.1  
+
+
+
+Lambda      K        H        a         alpha
+   0.321    0.130    0.382    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0421    0.140     1.90     42.6     43.6 
+
+Effective search space used: 44915430
+
+Search has CONVERGED!
+
+
+  Database: uniref_test.fasta
+    Posted date:  Feb 5, 2016  11:48 AM
+  Number of letters in database: 969,502
+  Number of sequences in database:  2,521
+
+
+
+Matrix: BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+Neighboring words threshold: 11
+Window for multiple hits: 40

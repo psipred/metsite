@@ -1,0 +1,62 @@
+<% hostname = self.request.host %>
+<% if (!@job_results)%>
+  No Job Status Updates yet...<br />
+<% end %>
+<% links="" %>
+
+<% results_copy = @job_results %>
+
+  <h1>Structure analysis results for job: <%= @job.name %></h1>
+  <h1>ID: <%= @job.UUID %></h1>
+    
+  <script src="../../../javascripts/Jmol.js" type="text/javascript"></script>
+<div id="tabs">
+  <ul>
+    <% if @job.program_hspred == 1  || @job.program_hspred == 3%>
+    <li id="tabs-62-tab"><a href="#tabs-62">HSPred</a></li>
+    <% end
+    if @job.program_metsite == 1  || @job.program_metsite == 3 %>
+    <li id="tabs-63-tab"><a href="#tabs-63">Metsite</a></li>
+    <% end
+    if @job.program_maketdb == 1   || @job.program_maketdb == 3%>
+    <li id="tabs-64-tab"><a href="#tabs-64">Make TDB</a></li>
+    <% end %>
+    <li id="tabs-72-tab"><a href="#tabs-72">Downloads</a></li>
+  </ul>
+
+  <% if @job.program_hspred == 1 || @job.program_hspred == 3 %>
+  <div id="tabs-62">
+    <%= render :partial => 'layouts/backend_errors', :locals => {:results => @job_results, :hostname => hostname} %>
+    <%= render :partial => 'layouts/hspred_table', :locals => {:results => @job_results, :hostname => hostname} %>
+  </div>
+  <% end %>
+
+  <% if @job.program_metsite == 1 || @job.program_metsite == 3  %>
+  <div id="tabs-63">
+    <%= render :partial => 'layouts/backend_errors', :locals => {:results => @job_results, :hostname => hostname} %>
+    <%= render :partial => 'layouts/metsite_table', :locals => {:results => @job_results, :hostname => hostname} %>
+  </div>
+  <% end %>
+
+  <% if @job.program_maketdb == 1  || @job.program_maketdb == 3 %>
+  <div id="tabs-64">
+    <%= render :partial => 'layouts/backend_errors', :locals => {:results => @job_results, :hostname => hostname} %>
+    <%= render :partial => 'layouts/maketdb_table', :locals => {:results => @job_results, :hostname => hostname} %>
+  </div>
+  <% end %>
+
+  
+  <div id="tabs-72">
+    <!-- Downloads Section -->
+    <% if @job.program_hspred == 1 %>
+    <%= render :partial => 'layouts/hspred_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_metsite == 1 %>
+    <%= render :partial => 'layouts/metsite_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+    <% if @job.program_maketdb == 1 %>
+    <%= render :partial => 'layouts/maketdb_downloads', :locals => {:results => @job_results, :hostname => hostname} %>
+    <% end %>
+  </div>
+  
+</div><!-- end tabs div -->

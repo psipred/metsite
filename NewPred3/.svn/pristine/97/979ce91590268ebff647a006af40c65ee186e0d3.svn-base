@@ -1,0 +1,137 @@
+<h1>The PSIPRED Structure Analysis Workbench</h1>
+<p>The PSIPRED Structure Analysis Workbench aggregates three structural analysis methods into one location. Users can submit protein structures, perform the analysis of their choice and receive the results of the prediction via e-mail and the web.<br />
+  For a summary of the available methods please read <span class="content_link"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=779" target="_blank">More...</a></span></p>
+<p>NOTE: users who need to run our methods on a large number of proteins should consider downloading our software using the menu on the left (Server Navigation -> Software Download).</p>
+<p><b>The PSIPRED Team</b><br />
+  <b>Current Contributors</b> David T. Jones, Daniel Buchan, Tim Nugent, Federico Minneci & Kevin Bryson<br />
+  <b>Previous Contributors</b> Anna Lobley, Sean Ward, Liam J. McGuffin</p>
+<p><b>For queries regarding PSIPRED:</b> <span class="content_link"><a href="mailto:psipred@cs.ucl.ac.uk">psipred@cs.ucl.ac.uk</a></span></p>
+<%= render :partial => "/layouts/warning_message" %>
+
+<%= pretty_error_messages_for :job %>
+<br />
+<%= form_tag("/structure/submit", :multipart=>true) do %>
+  <div id="tabs">
+    <ul>
+      <!--Here's a thing we need to name the tabs so the don't collide in the javascript with the new psipred page or the results pages for this form or the psipred results -->
+      <li id="tabs-50-tab"><a href="#tabs-50">Input</a></li>
+      <li id="tabs-51-tab"><a href="#tabs-51">Metsite Options</a></li>
+      <li id="tabs-52-tab"><a href="#tabs-52">HSPred Options</a></li>
+      <li id="tabs-54-tab"><a href="#tabs-54">Memembed Options</a></li>
+    </ul>
+    <div id="tabs-50">
+      <table>
+        <tr><td>
+          </td></tr>
+        <tr class="form_subtitle"><td><h4>Choose Analysis Methods</h4></td></tr>
+        <tr><td>
+            <table>
+              <tr><td><%= check_box_tag(:program_metsite, "1", false, { :onclick => "toggleTab(51);", :class => "program_metsite2" } ) %>MetSite (Protein-metal ion contact prediction)</td>
+                <td><%= check_box_tag(:program_hspred, "1", false, { :onclick => "toggleTab(52);", :class => "program_hspred2" }) %>HSPred (Protein-protein hotspot residue prediction)</td></tr>
+              <tr><td><%= check_box_tag(:program_memembed, "1", false, { :onclick => "toggleTab(54);", :class => "program_memembed2" } ) %>MEMEMBED (Membrane protein orientation predictor)</td>
+              	<td><%= check_box_tag(:program_maketdb, "1", false, { :onclick => "toggleTab(53);", :class => "program_maketdb2" } ) %>Generate TDB (Generated custom threading database entries)</td></tr>
+            </table>
+            <span class="content_link" id="standardHelp"><a href="#" title="Select one or more analyses">Help...</a></span>
+          </td></tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr class="form_subtitle"><td colspan="2"><h4>Upload PDB file</h4></td></tr>
+        <tr><td colspan="2"><br /><%= file_field_tag :pdbFile, {:size => 30, :class => "form_input"} %><br />
+            <span class="content_link" id="wideHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=5399" target="_blank" title="Select a valid PDB file from your computer">help...</a></span><br />
+            If you wish to Metsite or HSPred follow this link to retrieve <span class="content_link"><a href="http://www.rcsb.org/pdb/download/downloadFile.do?fileFormat=pdb&compression=NO&structureId=1IAR">a test pdb file.</a></span>
+          </td></tr>
+
+        <tr class="form_subtitle"><td><h4>Submission Details</h4></td></tr>
+        <tr><td>
+            Email Address for job completion alert (optional)<br />
+            <% if @address.length > 0 %><%= text_field_tag :email, "#{@address}", {:size => 30, :class => "form_input"} %><% else %><%= text_field_tag :email, "", {:size => 30, :class => "form_input"} %><% end %><br />
+            <span class="content_link" id="wideHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=5399" target="_blank" title="Add a valid email address if you wish to recieve an alert when your job completes">Help...</a></span><br /><br />
+
+            Password (only required for licenced commercial e-mail addresses)<br />
+            <%= text_field_tag :passwd,"" , {:size => 20, :class => "form_input"} %><br />
+            <span class="content_link" id="wideHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=5399" target="_blank" title="Commercial users with a valid licence should put their password here">Help...</a></span><br /><br />
+
+            Short identifier for submission<br />
+            <% if @subject.length > 0 %><%= text_field_tag :name,"#{@subject}", {:size => 15, :class => "form_input"} %><% else %><%= text_field_tag :name,"", {:size => 15, :class => "form_input"} %><% end %><br />
+            <span class="content_link" id="wideHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=5399" target="_blank" title="Please enter a short descriptor to identify your sequence">Help...</a></span><br /><br />
+
+            <!--<font color="red" size="+1">We would like to improve these services.<br /> If you have 5 minutes spare please follow this link to<br /> <a href="http://www.surveymonkey.com/s/DGJQVCC" target="_blank">answer this short survey about how you use our services</a></font><br /><br />-->
+            <%= submit_tag "Predict", :class => "form_input" %>&nbsp;<input class="form_input"  type="reset" value="Clear form" />
+
+          </td></tr>
+      </table>
+    </div>
+
+    <div id="tabs-51">
+      <table>
+        <tr class="form_subtitle"><td colspan="2"><h4>Select Metal Site Classifier</h4></td></tr>
+        <tr><td colspan="2"><br />
+            <%= select_tag :metType, options_for_select([["Calcium", "CA"],["Zinc", "ZN"],["Magnesium","MG"],["Iron","FE"],["Copper","CU"],["Manganese","MN"]],["CA"]), {:size => 6} %>
+            <br />
+            <span class="content_link" id="standardHelp"><a href="http://cms.cs.ucl.ac.uk/typo3/fileadmin/bioinf/MetSite/metsite_help.html" target="_blank" title="Select which metal ION to analyse">help...</a></span>
+          </td></tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr class="form_subtitle"><td colspan="2"><h4>Prediction Chain</h4></td></tr>
+        <tr><td colspan="2">Indicate for which chain in the PDB file you wish to make metal binding predictions<br /><br />
+            Chain ID: <% if @chain.length > 0 %><%= text_field_tag :chain, "#{@chain}", {:size => 10, :class => "form_input"} %><% else %><%= text_field_tag :chain, "A", {:size => 10, :class => "form_input"} %><% end %><br />
+            <span class="content_link" id="standardHelp"><a href="http://cms.cs.ucl.ac.uk/typo3/fileadmin/bioinf/MetSite/metsite_help.html" target="_blank" title="Select the PDB chain to analyse">help...</a></span>
+          </td></tr>
+
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr class="form_subtitle"><td colspan="2"><h4>Select False Positive Rate</h4></td></tr>
+        <tr><td>
+            <%= select_tag :fpr, options_for_select([["1%", "0"],["5%", "1"],["10%","2"],["20%","3"]],["1"]), {:size => 1} %>
+            <br />
+            <span class="content_link" id="standardHelp"><a href="http://cms.cs.ucl.ac.uk/typo3/fileadmin/bioinf/MetSite/metsite_help.html" target="_blank" title="Select the False Positive Rate">help...</a></span></td><td></td></tr>
+
+        <!--<tr><td colspan="2">&nbsp;</td></tr>
+        <tr class="form_subtitle"><td colspan="2"><h4>Score Cutoff</h4></td></tr>
+        <tr><td>
+        <%= select_tag :cutoff, options_for_select([["0.0", "0"],["0.1", "1"],["0.2", "2"],["0.3","3"],["0.4","4"],["0.5","5"],["0.6","6"],["0.7","7"],["0.8","8"],["0.9","9"]],["2"]), {:size => 1} %>
+        <br />
+        <span class="content_link"><a href="http://cms.cs.ucl.ac.uk/typo3/fileadmin/bioinf/MetSite/metsite_help.html">help...</a></span></td><td></td></tr>-->
+
+
+      </table>
+    </div>
+
+    <div id="tabs-52">
+      <table>
+        <tr id="formthing" class="form_subtitle"><td><h4>HSPred Options</h4></td></tr>
+<tr class="form_subtitle"><td colspan="2"><h4>Interface Definition</h4></td></tr>
+<tr><td colspan="2">List chain identifiers for the proteins on either face of the interface to be analysed. Use capital letters, space separate entries (e.g. "A B").<br /><br />
+Protein 1: <% if @chainsA.length > 0 %><%= text_field_tag :chainsA, "#{@chainsA}", {:size => 10, :class => "form_input"} %><% else %><%= text_field_tag :chainsA, "A", {:size => 10, :class => "form_input"} %><% end %><br /><br />
+Protein 2: <% if @chainsB.length > 0 %><%= text_field_tag :chainsB, "#{@chainsB}", {:size => 10, :class => "form_input"} %><% else %><%= text_field_tag :chainsB, "B", {:size => 10, :class => "form_input"} %><% end %><br /><br />
+If using the test pdb file linked above: input "A" for 'Protein 1' and input "B" for 'Protein 2'.<br />
+<span class="content_link" id="wideHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=3317" target="_blank" title="You must indicate the PDB chains on either side of the protein-protein interface">help...</a></span>
+          
+  </td></tr>
+<tr><td colspan="2">&nbsp;</td></tr>
+      </table>
+    </div>
+    
+    <div id="tabs-54">
+    	<table>
+        <tr id="formthing" class="form_subtitle"><td colspan="2"><h4>Memembed Options</h4></td></tr>
+        <tr>
+          <td>Search Type</td>
+          <td style="width: 60%;">
+            <%= select_tag :searchType, options_for_select([["Genetic Algorithm", "0"],["Grid Search", "1"],["Direct","2"],["GA x 5","3"]],["0"]), {:size => 1} %><br />
+          </td>
+        </tr>
+        <tr>
+          <td>Target is a Beta Barrel</td><td style="width: 60%;"><%= radio_button_tag(:barrel, "yes") %> Yes <%= radio_button_tag(:barrel, "no", :checked => true) %> No</td>
+        </tr>
+        <tr>
+          <td>N Terminal Location</td><td style="width: 60%;"><%= radio_button_tag(:ntermini, "in", :checked => true) %> Cytoplasmic <%= radio_button_tag(:ntermini, "out") %> Extra cellular</td>
+        </tr>
+        <tr>
+          <td>Helix Boundaries (comma separated list)</td><td style="width: 60%;"><%= text_field_tag :helixboundaries, "", {:size => 60, :class => "form_input"} %></td>
+        </tr>
+        
+        </table>
+    </div>
+
+  </div><!-- end tabs div -->
+<% end %>
+
+<%= render :partial => "/layouts/google_analytics" %>

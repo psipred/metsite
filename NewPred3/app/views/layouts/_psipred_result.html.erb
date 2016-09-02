@@ -1,0 +1,69 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+<div style="background: <%= cycle(bgcolor,'#fff') %>; padding: 4px;">
+  <% #TODO: Generalise this for future PSIPRED releases.
+     temp_data = log_result.data.gsub(/# PSIPRED HFORMAT \(PSIPRED V3.0\)\n\n/, "")
+     alignment_segments = temp_data.split(/\n{3}/)
+     if alignment_segments.length == 0
+        alignment_segments = temp_data
+  end %>
+
+  <a name="<%= log_result.content_name %>"></a>
+  <table>
+  <tr><td>Conf:</td><td>Confidence</td><td>0</td><td>=low</td><td>9</td><td>=high</td><td colspan="2"></td></tr>
+  <tr><td>Pred:</td><td>Predicted secondary structure</td><td class="helix">H</td><td>=helix</td><td class="strand">E</td><td>=strand</td><td class="alignment">C</td><td>=coil</td></tr>
+  <tr><td>AA:</td><td>Target sequence</td><td colspan="6"></td></tr>
+  </table>
+
+  <table>
+  <%  alignment_segments.each_with_index do |segment, index|
+       lines_temp = segment.split(/\n/)
+       lines = [] %><% elements = {}
+       lines_temp.each do |line|
+      
+         if line.length > 0
+            lines.push(line)
+         end
+       end
+
+       char_count = 0
+       alignment_characters = []
+       lines.each_with_index do |line, index2|
+         line.chomp
+
+         if(index2 == 0 || index2 == 2 || index2 == 3) %>
+        <tr>
+        <% characters = line.split("")
+           characters.each do |character|
+             char_count = characters.length %>
+          <td class="alignment"><%=  character %></td>
+        <% end %>
+        </tr>
+      <% end
+      
+         elements = {}
+         if(index2 == 1) %>
+        <tr>
+        <% characters = line.split("")
+           characters.each_with_index do |character,index|
+
+           if character =~ /E/ %>
+            <td class="strand"><%=  character %></td>
+          <% elsif character =~ /H/ %>
+            <td class="helix"><%=  character %></td>
+          <% else %>
+            <td class="alignment"><%=  character %></td>
+          <% end
+           end %>
+        </tr>
+      <% end
+       end %>
+    <tr><td colspan="<%= char_count %>"><hr class="row_separator" /></td></tr>
+  <% end %>
+  
+  </table>
+
+
+</div>

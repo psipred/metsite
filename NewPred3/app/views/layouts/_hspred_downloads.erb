@@ -1,0 +1,21 @@
+<table>
+<tr class="form_subtitle"><td><h4>HSPred Downloads</h4></td></tr>
+ <% index = 0
+    @job_results.each do |job_state|
+     if (job_state.status_class == 34 )
+        index+=1
+        if index == 1 %>
+     <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">Download first protein prediction PDB file</a></h4></td></tr>
+     <% else %>
+     <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">Download second protein prediction PDB file</a></h4></td></tr>
+     <% end
+     end
+   end
+
+ results.each do |job_state|
+     if job_state.status_class == 33 %>
+     <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">Download HSPRed output scores in plain text format</a></h4>
+       </td></tr>
+  <% end
+   end %>
+</table>

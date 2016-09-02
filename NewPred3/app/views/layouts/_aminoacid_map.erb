@@ -1,0 +1,294 @@
+ <% #Here we send the outputs we need to helper function to fill in the hash of annotation details.
+ require "pp"
+ hSequenceAnnotations = Hash.new{|h,k| h[k]=Hash.new(&h.default_proc) }
+ @job_results.each do |job_state|
+     if job_state.status_class == 11 && @job.program_psipred == 1 %>
+      <%h hSequenceAnnotations["psipred"] = parsePsipred(job_state) %>
+      <%h pp hSequenceAnnotations["psipred"] %>
+     <% end
+     if job_state.status_class == 19 && (@job.program_svmmemsat == 1 || @job.program_mempack == 1)%>
+     <%h hSequenceAnnotations["svmmemsat"] = parseMemsatSVM(job_state,@job.QueryString.length) %>
+     <%  end
+     if job_state.status_class == 24 && @job.program_disopred == 1 %>
+     <%h hSequenceAnnotations["disopred"] = parseDisopred(job_state) %>
+     <% end
+     if job_state.status_class == 28 && @job.program_dompred == 1 %>
+     <%h hSequenceAnnotations["dompred_psi"] = parseDompsi(job_state,@job.QueryString.length) %>
+     <% end
+     if job_state.status_class == 27 && @job.program_dompred == 1 %>
+     <%h hSequenceAnnotations["dompred_domssea"] = parseDomssea(job_state,@job.QueryString.length) %>
+     <% end
+
+     end
+reslookup = {"G" => "Gly", "P" => "Pro", "A" => "Ala", "V" => "Val", "L" => "Leu", "I" => "Ile", "M" => "Met", "C" => "Cys", "F" => "Phe", "Y" => "Tyr", "W" => "Trp", "H" => "His",
+            "K" => "Lys", "R" => "Arg", "Q" => "Gln", "N" => "Asn", "E" => "Glu", "D" => "Asp", "S" => "Ser", "T" => "Thr", "X" => "Unkown"}
+
+%>
+
+      <!--Annotated Sequence BEGIN -->
+<br />
+  <% if @job.program_psipred == 1 %>
+  <div id="psipredmap">
+  <% if(@job.QueryString.to_s.count('>') > 1)
+      %>Annotations given against the first sequence in the MSA<%
+     end
+  %>
+  <table>
+  <tr><td bgcolor="#eeeeee" class="border_bl"><b>Secondary Structure Map</b><br/></td></tr>
+  <tr><td><p>Feature predictions are colour coded onto the sequence according to the sequence feature key shown below.</p>
+      <table class="seq" cellspacing="0" cellpadding="0" border="0" >
+           <% i=1 %>
+           <% #And now we loop through the sequence and output the annotated sequence
+              seq=[]
+              if(@job.QueryString.to_s.count('>') <= 0)
+                sequence = @job.QueryString.gsub(/\s+/, "")
+                sequence.to_s.gsub!(/-/,"")
+                seq = sequence.split("")
+              else
+                
+                seq_count=0
+                seqs=[]
+
+                @job.QueryString.to_s.gsub!(/\r/,"")
+                @job.QueryString.to_s.gsub!(/-/,"")
+                lines = @job.QueryString.to_s.split("\n")
+
+                lines.each do |line|
+                  if line =~ /^>/
+                    seq_count+=1
+                    seqs[seq_count]=""
+                  else
+                    line.gsub!(/\s+/, "")
+                    seqs[seq_count]= seqs[seq_count] + line
+                  end
+
+                end
+                #
+                seq=seqs[1].split("")
+              end
+
+         %>
+           <tr>
+           <td align="right" class="numl"><b><font size="1"><%= i %></font></b></td>
+           <% first = "-"
+              second = "-"
+              third = "-"
+              seq.each_with_index do | char,index |
+                
+                first = "-"
+                second = "-"
+                third = "-"
+                annotation = " "
+                if(hSequenceAnnotations["psipred"][index]["PRED"] =~ /H/)
+                  first = "H"
+                  annotation+=": Helix "
+                elsif(hSequenceAnnotations["psipred"][index]["PRED"] =~ /E/)
+                  first = "E"
+                  annotation+=": Strand "
+                else
+                  first = "C"
+                end
+
+                if(hSequenceAnnotations["disopred"][index]["PRED"] =~ /D/)
+                  second="D"
+                  annotation+=": Disordered "
+                elsif(hSequenceAnnotations["disopred"][index]["PRED"] =~ /B/)
+                  second="B"
+                  annotation+=": Disordered : Binding "
+                end
+
+                if(hSequenceAnnotations["dompred_domssea"][index]["PRED"] =~ /B/)
+                  first="S"
+                  third="-"
+                  annotation+=": Domain Border "
+                end
+
+                if(hSequenceAnnotations["dompred_psi"][index]["PRED"] =~ /B/)
+                  first="B"
+                  third="-"
+                  annotation+=": Domain Border "
+                end
+
+                              
+
+                mapString = "map"+first+second+third %>
+              <td colspan="3" class="seq"><div class="resTip"><font class="<%= mapString %>" size="1" title="<%= reslookup[char] %> <%= index+1 %><%= annotation %>"><%= char %></font></div></td>
+
+               <% if index > 0
+                  if (index+1).modulo(50) == 0 %>
+                   <td align="left" class="numr"><b><font size="1"><%= i+49 %></font></b></td></tr><tr><td align="right" class="numl"><b><font size="1"><%= i+50 %></font></b></td>
+                   <% i += 50 %>
+                  <% end %>
+               <% end %>
+           <% end %>
+           </tr>
+          </table>
+
+         </td>
+        </tr>
+        <tr>
+          <td>
+           <br/><br/>
+           <table>
+             <tr>
+              <th class="th" align="left">KEY</th>
+              <th class="th">Helix</th>
+              <th class="th">Sheet</th>
+              <th class="th">Disordered</th>
+              <th class="th">Disordered<br />protein binding</th>
+              <th class="th">Dompred<br />Boundary</th>
+              <th class="th">DomSSEA<br />Boundary</th>
+
+             </tr>
+             <tr>
+              <th align="left" class="th">Annotations</th>
+              <td class="key" align="left"><span class="mapH--">M</span></td>
+              <td class="key" align="lefr"><span class="mapE--">L</span></td>
+              <td class="key" align="left"><span class="mapCD-">E</span></td>
+              <td class="key" align="left"><span class="mapCB-">E</span></td>
+              <td class="key" align="left"><span class="mapB--">A</span></td>
+              <td class="key" align="left"><span class="mapS--">D</span></td>
+              </tr>
+          
+           </table>
+           </td>
+          </tr>
+ </table>
+ </div>
+  <% end %>
+
+  <% if @job.program_svmmemsat == 1 || @job.program_mempack == 1 %>
+ <div id="memsatmap">
+   <% if(@job.QueryString.to_s.count('>') > 1)
+      %>Annotations given against the first sequence in the MSA<%
+     end
+  %>
+ <table>
+ <tr><td bgcolor="#eeeeee" class="border_bl"><b>TM Helix Map</b><br/></td></tr>
+ <tr><td><p>Feature predictions are colour coded onto the sequence according to the sequence feature key shown below.</p>
+      <table class="seq" cellspacing="0" cellpadding="0" border="0" >
+           <% i=1 %>
+           <% #And now we loop through the sequence and output the annotated sequence
+              seq=[]
+              if(@job.QueryString.to_s.count('>') <= 0)
+                sequence = @job.QueryString.gsub(/\s+/, "")
+                seq = sequence.split("")
+              else
+                seq_count=0
+                seqs=[]
+
+                @job.QueryString.to_s.gsub!(/\r/,"")
+                @job.QueryString.to_s.gsub!(/-/,"")
+                lines = @job.QueryString.to_s.split("\n")
+
+                lines.each do |line|
+                  if line =~ /^>/
+                    seq_count+=1
+                    seqs[seq_count]=""
+                  else
+                    seqs[seq_count]= seqs[seq_count] + line.gsub!(/\s+/, "")
+                  end
+
+                end
+                #
+                seq=seqs[1].split("")
+              end
+              %>
+
+           <tr>
+           <td align="right" class="numl"><b><font size="1"><%= i %></font></b></td>
+           <% first = "-"
+              second = "-"
+              third = "-"
+              seq.each_with_index do | char,index |
+                first = "-"
+                second = "-"
+                third = "-"
+                annotation=" "
+                 if(hSequenceAnnotations["svmmemsat"][index]["PRED"] =~ /P/)
+                  first = "P"
+                  annotation+=": Pore lining "
+                 elsif(hSequenceAnnotations["svmmemsat"][index]["PRED"] =~ /T/)
+                  first = "T"
+                  annotation+=": TM Helix "
+                elsif(hSequenceAnnotations["svmmemsat"][index]["PRED"] =~ /E/)
+                  first = "C"
+                  third = "E"
+                else
+                  first = "C"
+                end
+                if(hSequenceAnnotations["disopred"][index]["PRED"] =~ /D/)
+                  second="D"
+                  annotation+=": Disordered "
+                elsif(hSequenceAnnotations["disopred"][index]["PRED"] =~ /B/)
+                  second="B"
+                  annotation+=": Disordered : Binding "
+                end
+
+                if(hSequenceAnnotations["dompred_domssea"][index]["PRED"] =~ /B/)
+                  first="S"
+                  third="-"
+                  annotation+=": Domain Border "
+                end
+
+                if(hSequenceAnnotations["dompred_psi"][index]["PRED"] =~ /B/)
+                  first="B"
+                  third="-"
+                  annotation+=": Domain Border "
+                end
+
+
+                mapString = "map"+first+second+third %>
+              <td colspan="3"   class="seq"><div class="resTip"><font class="<%= mapString %>" size="1"  title="<%= reslookup[char] %> <%= index+1 %><%= annotation %>"><%= char %></font></div></td>
+
+               <% if index > 0
+                  if (index+1).modulo(50) == 0 %>
+                   <td align="left" class="numr"><b><font size="1"><%= i+49 %></font></b></td></tr><tr><td align="right" class="numl"><b><font size="1"><%= i+50 %></font></b></td>
+                   <% i += 50 %>
+                  <% end %>
+               <% end %>
+           <% end %>
+           </tr>
+          </table>
+
+         </td>
+        </tr>
+        <tr>
+          <td>
+           <br/><br/>
+           <table>
+             <tr>
+              <th class="th" align="left">KEY</th>
+              <th class="th">Transmembrane<br />Helix</th>
+              <th class="th">Pore lining<br />Helix</th>
+              <th class="th">Extracellular<br />Region</th>
+              <th class="th">Cytoplasmic<br />Region</th>
+              <th class="th">Disordered</th>
+              <th class="th">Disordered<br />protein binding</th>
+              <th class="th">Dompred<br />Boundary</th>
+              <th class="th">DomSSEA<br />Boundary</th>
+             </tr>
+             <tr>
+              <th align="left" class="th">Annotations</th>
+              <td class="key" align="left"><span class="mapT--">M</span></td>
+              <td class="key" align="left"><span class="mapP--">M</span></td>
+              <td class="key" align="lefr"><span class="mapC-E">L</span></td>
+              <td class="key" align="left"><span class="mapC--">E</span></td>
+              <td class="key" align="left"><span class="mapCD-">E</span></td>
+              <td class="key" align="left"><span class="mapCB-">E</span></td>
+              <td class="key" align="left"><span class="mapB--">A</span></td>
+              <td class="key" align="left"><span class="mapS--">D</span></td>
+            </tr>
+
+           </table>
+</td> </tr>
+ </table>
+</div>
+<% end %>
+
+ <% if @job.program_psipred == 1 && (@job.program_svmmemsat == 1 ||  @job.program_mempack == 1) %>
+ <button id="psipredbutton" class="form_input">SHOW PSIPRED MAP</button>
+ <button id="memsatbutton" class="form_input">SHOW MEMSAT MAP</button>
+ <br />
+ <% end %>
+

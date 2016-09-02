@@ -1,0 +1,33 @@
+<p><%= link_to 'New job', :action => 'newjob'%></p>
+<table width="100%">
+  <tr>
+    <% for column in Job.columns %>
+      <th>
+        <span style="white-space: nowrap;"><%= link_to column.human_name, { :page => @page, :order_by => "#{column.name} ASC"} %></span>
+      </th>
+    <% end %>
+  </tr>
+  <% for job in @jobs %>
+    <tr style="background: <%= cycle("#ccc","") %>;">
+      <% for column in Job.columns %>
+              <%if (column.name == "id") %>
+          <td style="padding: 3px;"> <%= link_to(job.id, { :action => 'status', :id => job.id }) %></td>
+        <% else %>
+              <% if (column.name == "QueryString") %>
+                <% if job.QueryString.nil? %>
+                  <td style="padding: 3px;"> No QueryString</td>
+                <% elsif job.QueryString.length > 1000 %>
+                  <td>Input data is greater than 1000 characters (likely a pdb file or multiple alignment)</td>
+                <% else %>
+                  <td style="padding: 3px;"> <%=h wrap_string(job.QueryString, 30, 1000) %></td>
+                <% end %>
+         <% else%>
+            <td style="padding: 3px;"><%=h job.send(column.name) %></td>
+          <% end %>
+        <% end %>
+  <% end %>
+    </tr>
+  <% end %>
+<%= will_paginate @jobs %>
+</table>
+<p><%= link_to 'New job', :action => 'newjob'%></p>

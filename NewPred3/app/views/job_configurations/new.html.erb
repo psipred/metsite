@@ -1,0 +1,17 @@
+<h1>New configuration</h1>
+
+<p><%= link_to 'Return to previous page', :action => 'list'%></p>
+
+<%= form_tag("/create", :method => "get") do %>
+
+  <%= render :partial => 'form' %>
+<p>Initial YAMLed Values</p>
+<p>
+  <%= text_area_tag "initial_values", "    --- {}", :size => "60x40"%>
+</p>
+  <br>
+
+  <p><%= submit_tag "Create", :class => "form_input" %>
+<% end %></p>
+
+<p><%= link_to 'Return to previous page', :action => 'list'%></p>

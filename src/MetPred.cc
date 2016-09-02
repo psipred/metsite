@@ -36,7 +36,7 @@ void Split(const string& str,vector<string>& tokens,const string& delimiters = "
 
 double logsig(double x){
 
- 
+
   double a = 1 + exp(-x);
 
   double xsq = 1/a;
@@ -89,30 +89,30 @@ map <int,Weights> mapIL;
 map <int,double> mapBias;
 
 vector<double> hidLayCalc(vector<double> patV){
-  
-  vector<double> hidLayer(25,0); 
+
+  vector<double> hidLayer(25,0);
 
   for(int i=0; i<hidLayer.size(); ++i){
 
     Weights IL = mapIL[i+1];
-   
+
       for(int j=0; j<patV.size(); ++j){
-	
+
 	double update =  patV[j] * IL.weightsV[j];
-	
+
 	hidLayer[i]+=update;
-      
-	     
+
+
     }
   }
-  
+
   for(int i=0; i<hidLayer.size(); ++i){
-    
+
     hidLayer[i] += mapBias[i+1];
-   
+
     hidLayer[i] = tansig(hidLayer[i]);
     //   cout << hidLayer[i] << endl;
-    
+
   }
 
   return hidLayer;
@@ -124,11 +124,11 @@ vector<double> hidLayCalc(vector<double> patV){
 
 int main(int argc, char* argv[]){
 
-	//d.buchan; added input for the chain ID we care about 
-  if (argc != 6) {
-   
+	//d.buchan; added input for the chain ID we care about
+  if (argc != 7) {
+
     cerr << "Command Line Error" << endl;
-    cerr << "Example usage: ./prog query Metalname Cut-off out chain" << endl;
+    cerr << "Example usage: ./prog query Metalname Cut-off out chain data_path" << endl;
     exit(1);
   }
 
@@ -138,40 +138,40 @@ int main(int argc, char* argv[]){
 
  ifstream infile(argv[1]);
   if (!infile) {
-    cerr << "cannot open file query" << argv[1] << endl;
+    cerr << "cannot open file query " << argv[1] << endl;
     exit(1);
   }
 
-  name = met+".IL";
+  name = argv[6]+met+"_.IL";
 
   ifstream infileIL(name.c_str());
-  if (!infile) {
-    cerr << "cannot open file ILweights" << argv[2] << endl;
+  if (!infileIL) {
+    cerr << "cannot open file ILweights: " << name << endl;
     exit(1);
   }
 
-  name = met+".OL";
+  name = argv[6]+met+"_.OL";
   ifstream infileOL(name.c_str());
-  if (!infile) {
-    cerr << "cannot open file OLweigths" << argv[3] << endl;
+  if (!infileOL) {
+    cerr << "cannot open file OLweigths: " << name << endl;
     exit(1);
   }
 
-  name = met+".BI";
+  name = argv[6]+met+"_.BI";
 
   ifstream infileBI(name.c_str());
-  if (!infile) {
-    cerr << "cannot open file bias" << argv[4] << endl;
+  if (!infileBI) {
+    cerr << "cannot open file bias: " << name << endl;
     exit(1);
-  } 
-   
-  name = met+".BI2";
+  }
+
+  name = argv[6]+met+"_.BI2";
 
   ifstream infileBI2(name.c_str());
-  if (!infile) {
-    cerr << "cannot open file bias output layer" << argv[5] << endl;
+  if (!infileBI2) {
+    cerr << "cannot open file bias output layer: " << name << endl;
     exit(1);
-  } 
+  }
 
   string line;
   vector<string> dataV;
@@ -200,7 +200,7 @@ int main(int argc, char* argv[]){
 
       data.inpatV.push_back(patemp);
 
-    }  
+    }
 
 
     patMap[count] = data;
@@ -212,7 +212,7 @@ int main(int argc, char* argv[]){
   int patNO = count;
 
   /******** Read input layer weigths *********/
-  
+
   count = 0;
 
   while (getline(infileIL,line)){
@@ -251,14 +251,14 @@ int main(int argc, char* argv[]){
     Split(line,dataV);
 
     Weights OLdata;
-   
+
     for(int i=0; i<dataV.size(); ++i){
 
       float patemp = atof(dataV[i].c_str());
 
       OLdata.weightsV.push_back(patemp);
 
-    } 
+    }
 
     mapOL[count] = OLdata;
 
@@ -270,7 +270,7 @@ int main(int argc, char* argv[]){
  /********** read bias weights ********/
 
  count = 0;
- 
+
  while (getline(infileBI,line)){
 
    ++count;
@@ -284,7 +284,7 @@ int main(int argc, char* argv[]){
  double biasOL=0;
 
  while (getline(infileBI2,line)){
- 
+
    float patemp = atof(line.c_str());
 
    biasOL = patemp;
@@ -312,12 +312,12 @@ int main(int argc, char* argv[]){
 
     Weights HLW;
     HLW.weightsV = HiddenLayerVec;
-    
+
     mapHL[i+1] = HLW;
-  
+
 
   }
-  
+
   /********** Output Layer weights calculation ***********/
 
   map<string,double> pdbScoresM;
@@ -326,9 +326,9 @@ int main(int argc, char* argv[]){
   map<int,Weights> mapRL;
 
   for(int i=0; i<patNO; ++i){
-     
+
     vector<double> OutputLayerVec(1,0);
-    
+
     Weights HLW = mapHL[i+1];
 
     for(int j=0; j<HLW.weightsV.size(); ++j){
@@ -343,12 +343,12 @@ int main(int argc, char* argv[]){
 
 	 OutputLayerVec[k]+=update;
 
-	
+
        }
     }
 
     for(int k=0; k<OutputLayerVec.size(); ++k){
-     
+
 
       double temp = OutputLayerVec[k] + biasOL;
       double pred = logsig(temp);
@@ -368,7 +368,7 @@ int main(int argc, char* argv[]){
   }
 
   /*************** READ IN PDB DATA ***************/
- 
+
   string pdb = argv[1];
   pdb = pdb.substr(0,pdb.length()-5);
   name = pdb; // + ".pdb";
@@ -393,9 +393,9 @@ int main(int argc, char* argv[]){
   while (getline(infileStr,line)){
 	//d.buchan: Well assign lines that don't match the incoming chainID
 	//to have a minimum temperature. to indicate "Not in the prediction", couloured blue as per the heat map
-	
+
 	 if(line.substr(0,4) == "ATOM"){
-    	
+
 		if(line.substr(21,1) != chainID)
 		{
 			out << line.substr(0,60) << "  " << "0.50" << endl;
@@ -415,7 +415,7 @@ int main(int argc, char* argv[]){
       string resName =  line.substr(17,3);
 
       resNo = resName+resNo;
-      
+
       double pred = pdbScoresM[resNo];
 	  //d.buchan: here we set not predictions in the predited chain to white
 	  // red indicates stronger prediction.
@@ -444,7 +444,7 @@ int main(int argc, char* argv[]){
 	  //out << "  " << "1.00" << endl;
       }
      /*
-   
+
       atoms.atomName = line.substr(13,3);
       atoms.resNum = atoi(line.substr(23,3).c_str());
       atoms.atomNum = atoi(line.substr(7,6).c_str());
@@ -471,15 +471,15 @@ int main(int argc, char* argv[]){
       */
 
     }
-	
-    
+
+
     if(line.substr(0,4) == "HETA"){
 
       out << line.substr(0,60) << "  " << "0.00" << endl;
     }
-  
 
-    
+
+
     if(line.substr(0,4) == "HEAD" || line.substr(0,4) == "REMA"  || line.substr(0,4) == "EXPD" ){
 
       out << line << endl;
@@ -487,5 +487,3 @@ int main(int argc, char* argv[]){
     }
   }
 }
-
-

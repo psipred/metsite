@@ -1,0 +1,281 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+  <% printed = 0 %>
+  <!--<form name="genForm">-->
+
+<% line_count=0 %>
+  <%  for line in log_result.data.split(/\n/) %>
+    <% line.chomp %>
+    <%  entries = line.split(/\s+/) %>
+
+    <% print_ctrl = 0 %>
+    <% # test the stringency of the results filter and whether and alignment is available before setting it to print %>
+    <%if result_filter =~ /GUESS/ && (@alignments.has_key?(entries[11]) || @alignments.has_key?(entries[9]))
+      print_ctrl = 1
+    end
+    if result_filter =~ /LOW/ && entries[0] =~ /CERT|HIGH|MEDIUM|LOW/ && (@alignments.has_key?(entries[11]) || @alignments.has_key?(entries[9]))
+      print_ctrl = 1
+    end
+    if result_filter =~ /MEDIUM/ && entries[0] =~ /CERT|HIGH|MEDIUM/ && (@alignments.has_key?(entries[11]) || @alignments.has_key?(entries[9]) )
+      print_ctrl = 1
+    end
+    if result_filter =~ /HIGH/ && entries[0] =~ /CERT|HIGH/ && (@alignments.has_key?(entries[11]) || @alignments.has_key?(entries[9]))
+      print_ctrl = 1
+    end
+    if result_filter =~ /CERT/ && entries[0] =~ /CERT/ && (@alignments.has_key?(entries[11]) || @alignments.has_key?(entries[9]))
+      print_ctrl = 1
+    end %>
+
+    <%  if(print_ctrl == 1) %>
+
+      <% if printed == 0 %>
+
+      <table border="1" cellspacing="0" cellpadding="0">
+            <tr>
+
+              <td><table width="300" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                  <td width="100"> <!--<applet code="jalview.bin.JalviewLite"
+			       	width="140" height="35"
+			       	archive="http://bioinfdev.cs.ucl.ac.uk:80/jalview/jalviewApplet.jar" name="Jalview">-->
+                        <%  entries.each_with_index do |entry, index| %>
+                          <% if index == 9 && @job.Type !~ /domthreader/ %>
+                            <% if @job.type =~ /^genthreader$/ %>
+
+                              <% @annotation_copy.each do |anno_state| %>
+                                <% if anno_state.status_class == 49 %>
+                                  <% if(anno_state.content_name =~ /.+_(\d+)\.aln/) %>
+                                    <% name_number = $1 %>
+                                    <% if name_number =~ /^#{line_count.to_s}$/ %>
+                                      <param name="file" value="http://bioinfdev.cs.ucl.ac.uk/genthreader_output/<%= anno_state.content_name %>">
+                                    <% end %>
+                                  <% end %>
+                                <% end %>
+                              <% end %>
+
+                              <% @annotation_copy.each do |anno_state| %>
+                                <% if anno_state.status_class == 48 %>
+                                  <% if(anno_state.content_name =~ /.+_(\d+)\.ann/) %>
+                                    <% name_number = $1 %>
+                                    <% if name_number =~ /^#{line_count.to_s}$/ %>
+                                      <param name="features" value="http://bioinfdev.cs.ucl.ac.uk/genthreader_output/<%= anno_state.content_name %>">
+                                    <% end %>
+                                  <% end %>
+                                <% end %>
+                              <% end %>
+<% else %>
+                <param name="file" value="http://bioinfdev.cs.ucl.ac.uk/genthreader_output/<%= @job.id  %>_<%= entry %>.aln">
+            	<param name="features" value="http://bioinfdev.cs.ucl.ac.uk/genthreader_output/<%= @job.id  %>_<%= entry %>.ann">
+
+                            <% end  %>
+                          
+                          <% end %>
+                        <% end %>
+                        <!--<param name="showFeatureSettings" value="true">
+                        <param name="wrap" value="true">
+            	<param name="showAnnotation" value="false">
+              <param name="windowHeight" value="500">
+            	<param name="windowWidth" value="650">
+            	<param name="showFullId" value="false">
+            	<param name="RGB"  value="FFFFFF">
+                <param name="debug" value="true">
+                    </applet>--> </td>
+                    <td width="165">First Start Jalview, then load the alignments with the buttons below</td>
+                  </tr>
+                </table></td>
+            </tr>
+          </table>
+
+        <table width="100%">
+      <tr>
+        <td bgcolor=\"#000000\"><b><big>Conf.</big></b></td>
+        <td bgcolor=\"#000000\"><b><big>Net Score</big></b></td>
+        <td bgcolor=\"#000000\"><b><big>p-value</big></b></td>
+       <td bgcolor=\"#000000\"><b><big>PairE</big></b></td>
+       <td bgcolor=\"#000000\"><b><big>SolvE</big></b></td>
+       <td bgcolor=\"#000000\"><b><big>Aln Score</big></b></td>
+       <td bgcolor=\"#000000\"><b><big>Aln Len</big></b></td>
+       <td bgcolor=\"#000000\"><b><big>Str Len</big></b></td>
+       <td bgcolor=\"#000000\"><b><big>Seq Len</big></b></td>
+
+       <% if @job.Type =~ /domthreader/ %>
+         <td bgcolor=\"#000000\"><b><big>Domain Start</big></b></td>
+         <td bgcolor=\"#000000\"><b><big>Domain End</big></b></td>
+         <td bgcolor=\"#000000\"><b><big>Domain Code</big></b></td>
+       <% end %>
+
+        <td bgcolor=\"#000000\"><b><big>View Alignment</big></b></td>
+       <% if @job.Type !~ /domthreader/ %>
+         <td bgcolor=\"#000000\"><b><big>SCOP Codes</big></b></td>
+         <td bgcolor=\"#000000\"><b><big>CATH Codes</big></b></td>
+       <% end %>
+       <td bgcolor=\"#000000\"><b><big>Structure</big></b></td>
+       <td bgcolor=\"#000000\"><b><big>Functional Data</big></b></td>
+     </tr>
+    
+      <% end %>
+
+      <% printed = 1 %>
+        <tr style="padding: 3px; background: <%= cycle('#EEEEEE','#FFFFFF')%>">
+       <%  entries.each_with_index do |entry, index| %>
+         <% if index == 9 && @job.Type !~ /domthreader/ %>
+          <td style="background: #FFFFFF">
+            <!-- relative reference to the jalviewApplet stopped working since the routing changes on the frontend stuff, are all the alignments broken? -->
+            <!-- Also worth noting; a jalview jar can only read from the file system it was load from -->
+          <!--<applet code="jalview.bin.JalviewLite" width="140" height="35" archive="http://bioinf.cs.ucl.ac.uk/jalview/jalviewApplet.jar" name="Jalview">-->
+          <!--<applet code="jalview.bin.JalviewLite" width="140" height="35" archive="http://bioinfdev.cs.ucl.ac.uk:80/jalview/jalviewApplet.jar" name="Jalviews">-->
+
+  <!--<param name="file" value="http://bioinfdev.cs.ucl.ac.uk:80/genthreader_output/<%= @job.id  %>_<%= entry %>.aln">
+            	<param name="features" value="http://bioinfdev.cs.ucl.ac.uk:80/genthreader_output/<%= @job.id  %>_<%= entry %>.ann">-->
+         <% aln_string = "" %>
+         <% ann_string = "" %>
+        <% if @job.Type =~ /genthreader$/ %>
+                <% @annotation_copy.each do |anno_state| %>
+                  <% if anno_state.status_class == 49 %>
+                      <% if(anno_state.content_name =~ /.+_(\d+)\.aln/) %>
+                          <% name_number = $1 %>
+                          <% if name_number =~ /^#{line_count.to_s}$/ %>
+                            <% aln_string = "http://bioinfdev.cs.ucl.ac.uk/genthreader_output/"+anno_state.content_name %>
+                          <% end %>
+                      <%  end %>
+                  <% end %>
+                <%  end %>
+
+                <% @annotation_copy.each do |anno_state| %>
+                  <% if anno_state.status_class == 48 %>
+                      <% if(anno_state.content_name =~ /.+_(\d+)\.ann/) %>
+                          <% name_number = $1 %>
+                          <% if name_number =~ /^#{line_count.to_s}$/ %>
+                            <% ann_string = "http://bioinfdev.cs.ucl.ac.uk/genthreader_output/"+anno_state.content_name %>
+                          <% end %>
+                      <%  end %>
+                  <% end %>
+                <%  end %>
+              <% else %>
+                <!--<param name="file" value="http://bioinfdev.cs.ucl.ac.uk/genthreader_output/<%= @job.id  %>_<%= entry %>.aln">
+            	<param name="features" value="http://bioinfdev.cs.ucl.ac.uk/genthreader_output/<%= @job.id  %>_<%= entry %>.ann">
+                
+              <% end %>
+
+                <param name="showFeatureSettings" value="true">
+            	<param name="wrap" value="true">
+            	<param name="showAnnotation" value="false">
+                <param name="windowHeight" value="500">
+            	<param name="windowWidth" value="650">
+            	<param name="showFullId" value="false">
+                <param name="debug" value="true">
+
+            	<param name="RGB"  value="FFFFFF">
+            </applet>-->
+            <form>
+              <applet name="JalviewLite"  code="jalview.bin.JalviewLite"
+archive="http://bioinfdev.cs.ucl.ac.uk:80/jalview/jalviewApplet.jar" width="0" height="0">
+<param name="debug" value="true"/>
+<param name="showbutton" value="false"/>
+<param name="debug" value="true">
+</applet>
+
+          <input type="button" name="Button1" value="Start" onClick="startJalview('<%= aln_string  %>','Button1.alignment','alwvar')"/>
+
+          <input class="form_input" type="button" onClick="swapAlignment('<%= aln_string  %>','<%= ann_string %>', '<%= entry %>', 'alnvar', 'annvar');" value="Display <%= entry %> Alignment" />
+          </form>
+           </td>
+          <% @table_rows[entry] = "TRUE"  %>
+          <% pdb_code = entry.chop %>
+          <td><a href="http://scop.mrc-lmb.cam.ac.uk/scop/pdb.cgi?pdb=<%= pdb_code %>">Search SCOP for <%= pdb_code %></a></td>
+          <td><a href="http://www.cathdb.info/chain/<%= pdb_code %>">Search CATH for <%= pdb_code %></a></td>
+          <td style="background: #FFFFFF"><a href="http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=<%= pdb_code.chop %>"><img src="http://www.cathdb.info/api/data/molscript/<%= pdb_code %>/M" alt="pdbImage" class="pdb_image" /></a></td>
+          <td><a href="http://bioinf.cs.ucl.ac.uk/function/?code=<%= pdb_code %>" target="_blank">Function Link</a></td>
+
+
+      <% elsif index == 11 && @job.Type =~ /domthreader/ %>
+          <td><a href="http://www.cathdb.info/domain/<%= entry %>"><%= entry %></a></td>
+          <td style="background: #FFFFFF">
+            <!--<applet code="jalview.bin.JalviewLite" width="140" height="35" archive="../../jalview/jalviewApplet.jar">-->
+            <applet code="jalview.bin.JalviewLite" width="140" height="35" archive="http://bioinf.cs.ucl.ac.uk:80/jalview/jalviewApplet.jar" name="Jalview">
+        	
+        	 <!--<param name="file" value="http://bioinfdev.cs.ucl.ac.uk:80/genthreader_output/<%= @job.id  %>_<%= entry %>.aln">
+            	<param name="features" value="http://bioinfdev.cs.ucl.ac.uk:80/genthreader_output/<%= @job.id  %>_<%= entry %>.ann">-->
+                <param name="file" value="http://bioinf.cs.ucl.ac.uk/genthreader_output/<%= @job.id  %>_<%= entry %>.aln">
+            	<param name="features" value="http://bioinf.cs.ucl.ac.uk/genthreader_output/<%= @job.id  %>_<%= entry %>.ann">
+                <% @annotation_copy.each do |anno_state| %>
+                  <% if anno_state.status_class == 49 %>
+                      <% if(anno_state.content_name =~ /.+_(\d+)\.aln/) %>
+                          <% name_number = $1 %>
+                          <% if name_number =~ /^#{line_count.to_s}$/ %>
+                            <param name="file" value="http://bioinf.cs.ucl.ac.uk/genthreader_output/<%= anno_state.content_name %>">
+                          <% end %>
+                      <%  end %>
+                  <% end %>
+                <%  end %>
+
+                <% @annotation_copy.each do |anno_state| %>
+                  <% if anno_state.status_class == 48 %>
+                      <% if(anno_state.content_name =~ /.+_(\d+)\.ann/) %>
+                          <% name_number = $1 %>
+                          <% if name_number =~ /^#{line_count.to_s}$/ %>
+                            <param name="features" value="http://bioinf.cs.ucl.ac.uk/genthreader_output/<%= anno_state.content_name %>">
+                          <% end %>
+                      <%  end %>
+                  <% end %>
+                <%  end %>
+
+
+            	<param name="showFeatureSettings" value="true">
+            	<param name="wrap" value="true">
+            	<param name="showAnnotation" value="false">
+
+            	<param name="windowHeight" value="500">
+            	<param name="windowWidth" value="650">
+            	<param name="showFullId" value="false">
+            	<param name="RGB"  value="FFFFFF">
+            	<param name="APPLICATION_URL" value="http://www.jalview.org/services/launchApp">
+            </applet>
+          </td>
+          <% @table_rows[entry] = "TRUE"  %>
+          <% pdb_code = entry.chop %>
+          <% pdb_code = pdb_code.chop %>
+          <% if @job.Type =~ /domthreader/ %>
+            <% pdb_code = pdb_code.chop %>
+          <% end %>
+          <!--<td><a href="http://scop.mrc-lmb.cam.ac.uk/scop/pdb.cgi?pdb=<%= pdb_code %>">Search SCOP for <%= pdb_code %></a></td>-->
+          <td style="background: #FFFFFF"><a href="http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=<%= pdb_code %>"><img src="http://www.cathdb.info/api/data/molscript/<%= entry %>/M" alt="pdbImage" class="pdb_image" /></a></td>
+          <td><a href="http://bioinf.cs.ucl.ac.uk/function/?code=<%= entry %>" target="_blank">Function Link</a></td>
+
+
+         <% else %>
+          <% if entry =~ /CERT/ %>
+            <td bgcolor="#00f000"><%= entry %></td>
+          <% elsif entry =~ /HIGH/ %>
+            <td bgcolor="#00f000"><%= entry %></td>
+          <% elsif entry =~ /MEDIUM/ %>
+            <td bgcolor="#ffaa00"><%= entry %></td>
+          <% elsif entry =~ /LOW/ %>
+            <td bgcolor="#f00000"><%= entry %></td>
+          <% elsif entry =~ /GUESS/ %>
+            <td bgcolor="#ff0000"><%= entry %></td>
+          <% else %>
+            <td><%= entry %></td>
+          <% end %>
+         <% end %>
+
+      <% end %>
+    </tr>
+    <% end %>
+
+    <% line_count+=1 %>
+<% end %>
+
+</table>
+<%  if(printed == 0) %>
+     <h2>There were no significant results for your sequence.</h2>
+   <% end %>
+<hr />
+
+<h3>Displaying only results rated MEDIUM confidence or better. <a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => log_result.id) %>">Click to download full results</a>.</h3>
+<h3>Click to <a href="http://bioinf.cs.ucl.ac.uk/genthreader_output/<%= @job.id  %>.html">view full results in machine printable format</a></h3>
+
+
+<!--</form>-->

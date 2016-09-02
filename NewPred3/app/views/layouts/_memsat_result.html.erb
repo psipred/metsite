@@ -1,0 +1,49 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+<% temp_data = log_result.data.gsub(/Summary of topology analysis:\n/, "")
+  data_segments = temp_data.split(/FINAL\sPREDICTION\n================/)
+
+ 
+   data_segments.each_with_index do |segment, index|
+     if index == 0
+       table_lines = segment.split(/\n/) %>
+    <tr><td>
+    <table style="width: 40%">
+      <tr><td><h4>Number</h4></td><td><h4>Type</h4></td><td><h4>Direction</h4></td><td><h4>Score</h4></td></tr>
+      <% table_lines.each do |line|
+           if line =~ /\d+\s+\w+\s+\(.\)\s:\sScore\s=\s-100000/
+             next
+           end
+           if line =~ /(\d+)\s+(\w+)\s+\((.)\)\s:\sScore\s=\s(.+)/ %>
+          <tr style="padding: 3px; background: <%= cycle(bgcolor,'#fff') %>; text-align: center;"><td><%= $1 %></td><td><%= $2 %></td><td><%= $3 %></td><td><%= $4 %></td></tr>
+        <% end
+         end %>
+    </table>
+    </td></tr>
+  <% end
+     if index == 1
+       final_segments = segment.split(/\)\n\n/) %>
+      <tr class="form_subtitle"><td><h4>MEMSAT3 Prediction</h4></td></tr>
+      <% final_segments.each_with_index do |pred, index1|
+           if index1 == 0
+             prediction_lines = pred.split(/\n/) %>
+          <tr><td>
+          <table style="width: 40%">
+            <tr><td><h4>Segment</h4></td><td><h4>Range</h4></td><td><h4>Score</h4></td></tr>
+          <% prediction_lines.each do |line|
+               if line =~ /(\d+):\s+(.+\d+-\d+)\s+\((.+)$/%>
+            <tr style="padding: 3px; background: <%= cycle(bgcolor,'#fff') %>; text-align: center;"><td><%= $1 %></td><td><%= $2 %></td>
+            <% temp = $3
+               score = temp.gsub(/\)$/, "") %>
+            <td><%= score %></td></tr>
+           <% end
+             end %>
+          </table>
+          </td></tr>
+        
+         <% end
+    end
+ end
+     end %>

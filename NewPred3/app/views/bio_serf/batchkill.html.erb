@@ -1,0 +1,17 @@
+<%= form_tag("/batch_kill_jobs", :method => "get") do %>
+<table width="100%">
+<tr>
+<th><span style ="font-size: x-large;">Name</span></th>
+<% for job in @jobs %>
+  <tr style="background: <%= cycle("#ccc","") %>;">
+      <td><span style = "font-size: large;"><%= link_to job.name,
+            { :action => 'status', :id => job.id } %></span></td>
+        <td>
+            <%= check_box_tag "#{job.id}", false, false %>
+            </td>
+    </tr>
+  <% end%>
+<%= will_paginate @jobs%>
+</table>
+<%= submit_tag("Kill", :class => "form_input")%>
+  <% end%>

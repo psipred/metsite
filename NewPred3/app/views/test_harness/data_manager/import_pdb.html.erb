@@ -1,0 +1,8 @@
+<h1>TestHarness#import_pdb</h1>
+<p>Find me in app/views/test_harness/import_pdb.rhtml</p>
+
+<% form_tag(:action => "do_import_pdb") do %>
+  <p>PDB Directory: <br>
+  <%= text_field_tag("pdb_dir", "/home/sward/CASP7_benchmark/structures/", :size => "75")%> </p>
+  <%= submit_tag("Parse Directory")%>
+<% end %>

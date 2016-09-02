@@ -1,0 +1,8 @@
+<%= form_tag("/batchdl_numeric_submit", :method => "get") do %>
+  <p>Job Start ID:
+  <%= text_field_tag("start_id","", :class => "form_input")%> </p>
+  <p>Job End ID:
+  <%= text_field_tag("end_id","", :class => "form_input")%> </p>
+
+  <%= submit_tag("Batch DL", :class => "form_input")%>
+<% end %>

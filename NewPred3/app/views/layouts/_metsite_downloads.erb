@@ -1,0 +1,16 @@
+<table>
+<tr class="form_subtitle"><td><h4>Metsite Downloads</h4></td></tr>
+ <% index = 0
+    @job_results.each do |job_state|
+     if (job_state.status_class == 23 ) %>
+     <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">Download a copy of the Prediction PDB file</a></h4></td></tr>
+     <% end
+   end
+
+ results.each do |job_state|
+     if job_state.status_class == 22 %>
+     <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">Download the Raw Neural Network scores</a></h4>
+       </td></tr>
+  <% end
+   end %>
+</table>

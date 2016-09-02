@@ -1,0 +1,183 @@
+<h1>The PSIPRED Protein Sequence Analysis Workbench</h1>
+<p>The PSIPRED Protein Sequence Analysis Workbench aggregates several UCL structure prediction methods into one location. Users can submit a protein sequence, perform the predictions of their choice and receive the results of the prediction via e-mail or the web.<br />
+  For a summary of the available methods you can read <span class="content_link"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=779" target="_blank">More...</a></span></p>
+<p>NOTE: users who need to run our methods on a large number of proteins should consider downloading our software using the menu on the left (Server Navigation -> Software Download).</p>
+<p><b>The PSIPRED Team</b><br />
+  <b>Current Contributors</b> David T. Jones, Daniel Buchan, Tim Nugent, Federico Minneci & Kevin Bryson<br />
+  <b>Previous Contributors</b> Anna Lobley, Sean Ward, Liam J. McGuffin</p>
+<p><b>For queries regarding PSIPRED:</b> <span class="content_link"><a href="mailto:psipred@cs.ucl.ac.uk">psipred@cs.ucl.ac.uk</a></span></p>
+<%= render "layouts/warning_message" %>
+
+<%= pretty_error_messages_for :job %>
+<br />
+<%= form_tag("/psipred/submit", :method => "get") do %>
+  <div id="tabs">
+    <ul>
+      <li id="tabs-1-tab"><a href="#tabs-1">Input</a></li>
+      <li id="tabs-2-tab"><a href="#tabs-2">Sequence Filter</a></li>
+      <li id="tabs-3-tab"><a href="#tabs-3">MSA Options</a></li>
+      <li id="tabs-4-tab"><a href="#tabs-4">DISOPRED</a></li>
+      <li id="tabs-5-tab"><a href="#tabs-5">BioSerf</a></li>
+      <li id="tabs-6-tab"><a href="#tabs-6">DomPred</a></li>
+    </ul>
+    <div id="tabs-1">
+      <table>
+        <tr><td>
+          </td></tr>
+        <tr class="form_subtitle"><td><h4>Choose Prediction Methods</h4></td></tr>
+        <tr><td>
+            <table>
+              <tr><td><% if @psipred.length > 0 %><%= check_box_tag(:program_psipred, "1", true, { :onclick => "toggleTab(0);", :class => "program_psipred2" } ) %><% else %><%= check_box_tag(:program_psipred, "1", false, { :onclick => "toggleTab(0);", :class => "program_psipred2" } ) %><% end %>PSIPRED v3.3 (Predict Secondary Structure)</td>
+                  <td><% if @disopred.length > 0 %><%= check_box_tag(:program_disopred, "1", true, { :onclick => "toggleTab(4);", :class => "program_disopred2" }) %><% else %><%= check_box_tag(:program_disopred, "1", false, { :onclick => "toggleTab(4);", :class => "program_disopred2" }) %><% end %>DISOPRED3 & DISOPRED2 (Disorder Prediction)</td></tr>
+              <tr><td><% if @pgenth.length > 0 %><%= check_box_tag(:program_mgenthreader, "1", true, { :onclick => "toggleTab(0);", :class => "program_mgenthreader2" } ) %><% else %><%= check_box_tag(:program_mgenthreader, "1", false, { :onclick => "toggleTab(0);", :class => "program_mgenthreader2" } ) %><% end %>pGenTHREADER (Profile Based Fold Recognition)</td>
+                  <td><% if @memsat.length > 0 %><%= check_box_tag(:program_svmmemsat, "1", true, { :onclick => "toggleTab(0);", :class => "program_svmmemsat2" } ) %><% else %><%= check_box_tag(:program_svmmemsat, "1", false, { :onclick => "toggleTab(0);", :class => "program_svmmemsat2" } ) %><% end %>MEMSAT3 & MEMSAT-SVM (Membrane Helix Prediction)
+              <tr><td>&nbsp;</td></tr>
+              <tr><td><% if @bioserf.length > 0 %><%= check_box_tag(:program_bioserf, "1", true, { :onclick => "toggleTab(5);", :class => "program_bioserf2" }) %><% else %><%= check_box_tag(:program_bioserf, "1", false, { :onclick => "toggleTab(5);", :class => "program_bioserf2" }) %><% end %>BioSerf v2.0 (Automated Homology Modelling)
+                  <td><% if @dompred.length > 0 %><%= check_box_tag(:program_dompred, "1", true, { :onclick => "toggleTab(6);", :class => "program_dompred2" }) %><% else %><%= check_box_tag(:program_dompred, "1", false, { :onclick => "toggleTab(6);", :class => "program_dompred2" }) %><% end %>DomPred (Protein Domain Prediction)</td></tr>
+              <tr><td><% if @ffpred.length > 0 %><%= check_box_tag(:program_ffpred, "1", true, { :onclick => "toggleTab(0);", :class => "program_ffpred2" } ) %><% else %><%= check_box_tag(:program_ffpred, "1", false, { :onclick => "toggleTab(0);", :class => "program_ffpred2" } ) %><% end %>FFPred 3 (Eukaryotic Function Prediction)
+                  <td><% if @genth.length > 0 %><%= check_box_tag(:program_genthreader, "1", true, { :onclick => "toggleTab(0);", :class => "program_genthreader2" } ) %><% else %><%= check_box_tag(:program_genthreader, "1", false, { :onclick => "toggleTab(0);", :class => "program_genthreader2" } ) %><% end %>GenTHREADER (Rapid Fold Recognition)</td></tr>
+              <tr><td><% if @mempack.length > 0 %><%= check_box_tag(:program_mempack, "1", true, { :onclick => "toggleTab(0);", :class => "program_mempack2" } ) %><% else %><%= check_box_tag(:program_mempack, "1", false, { :onclick => "toggleTab(0);", :class => "program_mempack2" } ) %><% end %>MEMPACK (SVM Prediction of TM Topology and Helix Packing)</td>
+                  <td><% if @pdomth.length > 0 %><%= check_box_tag(:program_domthreader, "1", true, { :onclick => "toggleTab(0);", :class => "program_domthreader2" } ) %><% else %><%= check_box_tag(:program_domthreader, "1", false, { :onclick => "toggleTab(0);", :class => "program_domthreader2" } ) %><% end %>pDomTHREADER (Fold Domain Recognition)</td></tr>
+              <tr><td><% if @domserf.length > 0 %><%= check_box_tag(:program_domserf, "1", true, { :onclick => "toggleTab(5);", :class => "program_domserf2" } ) %><% else %><%= check_box_tag(:program_domserf, "1", false, { :onclick => "toggleTab(5);", :class => "program_domserf2" } ) %><% end %>DomSerf v2.0 (Automated Domain Modelling by Homology)</td>
+                  <td></td></tr>
+            
+            </table>
+            <span class="content_link" id="standardHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=5399" title="Select one or more analyses">Help...</a></span>
+          </td></tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr class="form_subtitle"><td><h4>Input Sequence (Single sequence or Multiple Sequence alignments;  as raw sequence or fasta format)</h4></td></tr>
+        <tr><td><% if @sequence.length > 0 %><%= text_area_tag(:sequence, "#{@sequence}", :size => "80x5", :onchange => "examineSequence();") %><% else %><%= text_area_tag(:sequence, "", :size => "80x5", :onchange => "examineSequence();") %><% end %><br />
+            <span class="content_link" id="wideHelp"><a href="#" title="Enter valid amino acid sequence in single letter code. Fasta format and fasta formatted MSAs are also allowed">Help...</a></span><br />If you wish to test these services follow this link to retrieve <span class="content_link"><a href="http://www.uniprot.org/uniprot/B0R5N9.fasta">a test fasta sequence.</a></span><br />
+          </td></tr>
+        <tr class="form_subtitle"><td><h4>Submission Details</h4></td></tr>
+        <tr><td>
+            Email Address for job completion alert (optional)<br />
+            <% if @address.length > 0 %><%= text_field_tag :email, "#{@address}", {:size => 30, :class => "form_input"} %><% else %><%= text_field_tag :email, "", {:size => 30, :class => "form_input"} %><% end %><br />
+            <span class="content_link" id="wideHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=5399" target="_blank" title="Add a valid email address if you wish to recieve an alert when your job completes">Help...</a></span><br /><br />
+
+            Password (only required for licenced commercial e-mail addresses)<br />
+            <%= text_field_tag :passwd,"" , {:size => 20, :class => "form_input"} %><br />
+            <span class="content_link" id="wideHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=5399" target="_blank" title="Commercial users with a valid licence should put their password here">Help...</a></span><br /><br />
+
+            Short identifier for submission<br />
+            <% if @subject.length > 0 %><%= text_field_tag :subject,"#{@subject}", {:size => 15, :class => "form_input"} %><% else %><%= text_field_tag :subject,"", {:size => 15, :class => "form_input"} %><% end %><br />
+            <span class="content_link" id="wideHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=5399" target="_blank" title="Please enter a short descriptor to identify your sequence">Help...</a></span><br /><br />
+
+            <!--<font color="red" size="+1">We would like to improve these services.<br /> If you have 5 minutes spare please follow this link to<br /> <a href="http://www.surveymonkey.com/s/DGJQVCC" target="_blank">answer this short survey about how you use our services</a></font><br /><br />-->
+            <%= submit_tag "Predict", :class => "form_input" %>&nbsp;<input class="form_input" onclick="clear_form_elements(this.form)" type="button" value="Clear form" />
+
+          </td></tr>
+      </table>
+    </div>
+    <div id="tabs-2">
+      <table>
+        <tr id="formthing" class="form_subtitle"><td><h4>PFilt Options</h4></td></tr>
+        <tr><td><b>Select Sequence masking options</b></td></tr>
+        <tr><td>
+            <!-- For check box buttons make sure you include a hidden field with the alternative value, makes life easier when the job gets to the server -->
+            <%= check_box_tag(:complex, "true", :checked => true) %><%= hidden_field_tag :complex, "false" %>Mask low complexity regions<br />
+            <%= check_box_tag(:membrane, "true") %><%= hidden_field_tag :membrane, "false" %>Mask transmembrane helices<br />
+            <%= check_box_tag(:coil, "true") %><%= hidden_field_tag :coil, "false" %>Mask coiled-coil regions<br />
+            <span class="content_link" id="wideHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=5399" target="_blank" title="Controls the degree of low complexity sequence masking">Help...</a></span><br />
+            <b>Warning: No sequence filters are applied when running MEMSAT or MEMPACK</b><br />
+          </td></tr>
+      </table>
+    </div>
+    <div id="tabs-3">
+      <table>
+        <tr id="formthing" class="form_subtitle"><td><h4>Homologue Detection</h4></td></tr>
+        <tr><td>
+            <b>It looks like your input may be a multiple sequence alignment; Multiple alignment input is only available for PSIPRED, pGenTHREADER and pDomTHREADER</b><br /><br />
+            <%= radio_button_tag(:msa_control, "all", :checked => true) %>Find new close and distant relatives. Your input alignment contains only some of the possible homologues (most accurate calculation)<br />
+            <%= radio_button_tag(:msa_control, "distant") %>Find new distant relatives. You are sure your input alignment contains all known close homologues<br />
+            <%= radio_button_tag(:msa_control, "no") %>Find no relatives. You are sure your input alignment contains all known homologues (likely to be least accurate)<br />
+            <span class="content_link" id="wideHelp"><a href="http://bioinf.cs.ucl.ac.uk/index.php?id=5399" target="_blank" title="Controls the depth of the sequence database search">Help...</a></span><br />
+            <b>Warning: These options only apply to multiple alignment input.</b><br />
+          </td></tr>
+      </table>
+    </div>
+    <div id="tabs-4">
+      <table>
+        <tr class="form_subtitle"><td colspan="2"><h4>Prediction Options</h4></td></tr>
+        <tr>
+          <td style="width: 40%;">Include PSIPRED secondary structure prediction</td>
+          <td><%= check_box_tag :secStructPred, "true" , :checked=>"checked" %><%= hidden_field_tag :secStructPred, "false" %></td>
+        </tr>
+        <tr>
+          <td>DISOPRED2's False Positive Threshold:</td>
+          <td>
+            <%= select_tag :falseRate, options_for_select([["5%","5"]],["5"]), {:disabled => true, :size => 1} %><br />
+          </td>
+        </tr>
+        <tr><td colspan = "2"><b>Note: the threshold in False Positive Rate for DISOPRED2 predicitions is now fixed to 5%, which is the default value used by DISOPRED3.</b><br /></td></tr>
+        
+        <tr><td>&nbsp;</td></tr>
+        
+        <tr class="form_subtitle"><td colspan="2"><h4>Output Options</h4></td></tr>
+        <tr>
+          <td colspan="2">
+            <%= radio_button_tag(:output, "opnone", :checked => true) %>Don't return PSI-BLAST output<br />
+            <%= radio_button_tag(:output, "ophits") %>Return PSI-BLAST hits only<br />
+            <%= radio_button_tag(:output, "opaln") %>Return PSI-BLAST hits and alignments<br />
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div id="tabs-5">
+      <table>
+        <tr class="form_subtitle"><td><h4>Modeller Key:</h4></td></tr>
+        <tr><td><b>Input your MODELLER key obtained from the Sali lab</b></td></tr>
+        <tr><td>
+            <%= text_field_tag("modeller", "", :class => 'form_input')%><br />
+          <span class="content_link" id="wideHelp"><a href="http://cms.cs.ucl.ac.uk/typo3/fileadmin/bioinf/BioSerf/bioserf_help.html" target="_blank" title="MODELLER key is available only with a valid MODELLER licence">Help...</a></span><br />
+          </td></tr>
+      </table>
+    </div>
+
+    <div id="tabs-6">
+      <table>
+        <tr class="form_subtitle"><td colspan="2"><h4>Sequence alignment domain prediction: PSI-BLAST options</h4></td></tr>
+        <tr>
+          <td>Perform PSI-BLAST based prediction:</td><td style="width: 60%;"><%= radio_button_tag(:seqalign, "yes", :checked => true) %> Yes <!-- #radio_button_tag(:seqalign, "no") No --> </td>
+        </tr>
+        <tr>
+          <td>Select database:</td><td style="width: 60%;"><!-- radio_button_tag(:database, "nonrucl") %> Non-redundant UCL --> <%= radio_button_tag(:database, "PfamA", :checked => true) %> PfamA</td>
+        </tr>
+        <tr>
+          <td>PSI-BLAST e-value cutoff:</td><td style="width: 60%;"><%= text_field_tag(:eval, "0.01", :size => "5", :class =>"form_input") %></td>
+        </tr>
+        <tr>
+          <td>Number of PSI-BLAST iterations:</td><td style="width: 60%;"><%= text_field_tag(:iterations, "5", :size => "5", :class =>"form_input") %></td>
+        </tr>
+        <tr>
+          <td colspan="2"><span class="content_link" id="wideHelp"><a href="http://cms.cs.ucl.ac.uk/typo3/fileadmin/bioinf/DomPred/DomPred_help.html#psi_help" target="_blank" title="Controls the PSI-BLAST sensitivity">Help...</a></span></td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+
+        <tr class="form_subtitle"><td colspan="2"><h4>DomSSEA domain prediction options</h4></td></tr>
+        <tr>
+          <td>Perform DomSSEA prediction:</td><td style="width: 60%;"><%= radio_button_tag(:domssea, "yes", :checked => true) %> Yes <!-- radio_button_tag(:domssea, "no")  No --></td>
+        </tr>
+        <tr>
+          <td colspan="2"><span class="content_link" id="wideHelp"><a href="http://cms.cs.ucl.ac.uk/typo3/fileadmin/bioinf/DomPred/DomPred_help.html#domssea_help" target="_blank" title="Toggle the DOMSSEA run">Help...</a></span></td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+
+        <tr class="form_subtitle"><td colspan="2"><h4>PSIPRED options</h4></td></tr>
+        <tr>
+          <td>Include secondary structure profile plot:</td><td style="width: 60%;"><%= radio_button_tag(:secpro, "yes", :checked => true) %> Yes <%= radio_button_tag(:secpro, "no") %> No</td>
+        </tr>
+        <tr>
+          <td>Display PSIPRED prediction:</td><td style="width: 60%;"><%= radio_button_tag(:pp, "yes", :checked => true) %> Yes <%= radio_button_tag(:pp, "no") %> No</td>
+        </tr>
+        <tr>
+          <td colspan="2"><span class="content_link" id="wideHelp"><a href="http://cms.cs.ucl.ac.uk/typo3/fileadmin/bioinf/DomPred/DomPred_help.html#psiplot_help" target="_blank" title="Toggles the PSIPRED display in the results">Help...</a></span></td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+      </table>
+    </div>
+
+  </div><!-- end tabs div -->
+<% end %>
+
+<%= render :partial => "/layouts/google_analytics" %>

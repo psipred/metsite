@@ -1,0 +1,16 @@
+<% hostname = self.request.host  %>
+<h1 align="center">Your PSIPRED server job is still being calculated</h1>
+<p align="center">Your job is in the queue under the name: <%= @job.name %> with the job ID: <%= @job.UUID %> <p>
+<p align="center"><img src="http://cms.cs.ucl.ac.uk/typo3/fileadmin/bioinf/templates/images/clock_2.gif" alt="clock"></p>
+<p align="center">Jobs typically take at least 30 minutes and may be as long as 2 hours. If there is no response after 6 hours please email.</p>
+<p align="center">Your results will be returned to this window once your job has completed. If you close the window or choose to navigate away you
+can check the progress at <a href="http://<%= hostname%>/<%= h(@service_name) %>/result/<%= @job.UUID %>">http://<%= hostname%>/<%= h(@service_name) %>/result/<%= @job.UUID %></a>.
+Your results will be emailed to you once the job has completed</p>
+
+<script type="text/javascript"><!--
+setTimeout('Redirect()',180000);
+function Redirect()
+{
+  location.href = 'http://<%= hostname%>/<%= h(@service_name) %>/result/<%= @job.UUID %>';
+}
+// --></script>

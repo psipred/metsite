@@ -1,0 +1,67 @@
+<table>
+
+<tr class="form_subtitle"><td><h4>HSPred Prediction</h4></td></tr>
+  <tr>
+   <td>
+     <table><tr>
+<% #Display the metsite prediction in jmol
+   @job_results.each do |job_state|
+    if (job_state.status_class == 34 )%>
+
+       <td><div style="padding: 4px;"> <form>
+        <script type="text/javascript">
+          jmolInitialize("/", "JmolApplet.jar");
+          jmolApplet(430, "load <%= url_for( :controller => "bio_serf",
+                                    :action => "getresultattached",
+                                    :id => job_state.id) %>; cpk off; wireframe off; cartoon; color cartoon fixedTemperature; ");
+        </script></form>
+    </div>
+   </td>
+  <% end
+   end %>
+   </tr></table>
+   </td>
+  </tr>
+ <tr>
+  <td>
+     <p>
+    <table class="colorTable" border="0" cellpadding="4" cellspacing="0" width="100%">
+<tr><td bgcolor="#ff0000" style="border-style:solid; border-width:1px; border-color:#000000">&nbsp;&nbsp;</td><td>&nbsp;Hotspot residue</td></tr>
+<tr><td bgcolor="#ffffff" style="border-style:solid; border-width:1px; border-color:#000000">&nbsp;&nbsp;</td><td>&nbsp;Non-hotspot residue</td></tr>
+<tr><td bgcolor="#0000ff" style="border-style:solid; border-width:1px; border-color:#000000">&nbsp;&nbsp;</td><td>&nbsp;Non-interface residue</td></tr>
+</table>
+</p>
+  </td>
+ </tr>
+
+
+<% #print out the table of metsite scores
+   @job_results.each do |job_state|
+      if (job_state.status_class == 33 )%>
+     <tr class="form_subtitle"><td><h4>HSPred output scores</h4></td></tr>
+     <tr><td>
+    <table id="hspredTable" class="tablesorter">
+      <thead>
+        <tr>
+          <th style="width: 60px">Chain/Residue</th>
+          <th style="width: 150px">Residue Identity</th>
+          <th style="width: 100px">Score</th>
+        </tr>
+      </thead>
+      <tbody>
+    <% for line in job_state.data.split(/\n/)
+       line = line.gsub(/^\s+/,"") %>
+    <tr>
+      <% entries = line.split(/\s+/)
+         entries.each do |entry| %>
+        <td style="text-align: right"><%= entry %></td>
+      <% end %>
+    </tr>
+    <% end %>
+    </tbody>
+    </table>
+    </td></tr>
+  <% end
+   end %>
+
+</table>

@@ -1,0 +1,12 @@
+<%= form_tag("/ff_submit", :method => "get") do %>
+  <p>Job Name:</p>
+  <p><%= text_field_tag("name")%> </p>
+
+  <p>Sequence:</p>
+  <p><%= text_area_tag "seq", "", :size => "70x5"%></p>
+
+  <p>E-Mail Address:</p>
+  <p><%= text_field_tag("address")%> </p>
+
+  <%= submit_tag("Predict")%>
+<% end %>

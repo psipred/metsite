@@ -1,0 +1,27 @@
+<%#
+# inputs: ref_entry (TestEntry for this detail view, report (Report for this detail view)
+# entries (array of stat hashes)
+%>
+
+<div style="background: <%= cycle(bgcolor,'#fff') %>; padding: 4px;">
+<strong>Details for: <%=link_to ref_entry.name, { :action => 'show_entry', :id => ref_entry.id, :controller => 'data_manager' }%></strong><br>
+<img src="<%= url_for(:controller => 'report_manager', :action => 'entry_summary_image', 
+       :id => report.id, :ref_id => ref_entry.id)%>" /> <br><br>
+
+  <strong>Summary Details:</strong><br>
+  <% if (@entries.any?)%>
+          <% table(entries, ["Model Type", "Min", "Max", "Mean", "Count"]) do |element, foo| -%>
+      <tr style="background: <%= foo%>;">
+          <td><%= element["model_type"]%></td>
+        <td><%= element["min"]%></td>
+        <td><%= element["max"]%></td>
+        <td><%= element["mean"]%></td>
+        <td><%= element["count"]%></td>
+      </tr>
+      <tr style="background: <%= foo%>;">
+          </tr>
+    <% end -%>
+
+    <%end%>
+
+  </div>

@@ -1,0 +1,4 @@
+<%models = @job.get_models %>
+<% for model in models %>
+<%= model%>
+<% end %>

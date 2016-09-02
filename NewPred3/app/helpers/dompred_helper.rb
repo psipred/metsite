@@ -1,0 +1,2 @@
+module DompredHelper
+end

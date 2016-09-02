@@ -1,0 +1,185 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+  <% printed = 0 %>
+  <!--<form name="genForm">-->
+
+<% line_count=0
+      for line in log_result.data.split(/\n/)
+       line.chomp
+        entries = line.split(/\s+/)
+
+       print_ctrl = 0
+       # test the stringency of the results filter and whether and alignment is available before setting it to print
+       if result_filter =~ /GUESS/ && (@alignments.has_key?(entries[11]) || @alignments.has_key?(entries[9]))
+      print_ctrl = 1
+    end
+    if result_filter =~ /LOW/ && entries[0] =~ /CERT|HIGH|MEDIUM|LOW/ && (@alignments.has_key?(entries[11]) || @alignments.has_key?(entries[9]))
+      print_ctrl = 1
+    end
+    if result_filter =~ /MEDIUM/ && entries[0] =~ /CERT|HIGH|MEDIUM/ && (@alignments.has_key?(entries[11]) || @alignments.has_key?(entries[9]) )
+      print_ctrl = 1
+    end
+    if result_filter =~ /HIGH/ && entries[0] =~ /CERT|HIGH/ && (@alignments.has_key?(entries[11]) || @alignments.has_key?(entries[9]))
+      print_ctrl = 1
+    end
+    if result_filter =~ /CERT/ && entries[0] =~ /CERT/ && (@alignments.has_key?(entries[11]) || @alignments.has_key?(entries[9]))
+      print_ctrl = 1
+    end
+
+     if(print_ctrl == 1)
+
+         if printed == 0 %>
+<form name="form1">
+   <applet name="JalviewLite"  code="jalview.bin.JalviewLite"
+archive="http://bioinf.cs.ucl.ac.uk/jalview/jalviewApplet.jar" width="0" height="0">
+<param name="showbutton" value="false"/>
+<param name="showFeatureSettings" value="true"/>
+<param name="wrap" value="true"/>
+<param name="showAnnotation" value="false"/>
+<param name="windowHeight" value="500"/>
+<param name="windowWidth" value="650"/>
+<param name="showFullId" value="false"/>
+<param name="RGB"  value="FFFFFF"/>
+</applet>
+        <table width="100%">
+      <tr>
+        <td bgcolor="#FFFFFF"><b>Conf.</b></td>
+        <td bgcolor="#FFFFFF"><b>Net Score</b></td>
+        <td bgcolor="#FFFFFF"><b>p-value</b></td>
+       <td bgcolor="#FFFFFF"><b>PairE</b></td>
+       <td bgcolor="#FFFFFF"><b>SolvE</b></td>
+       <td bgcolor="#FFFFFF"><b>Aln Score</b></td>
+       <td bgcolor="#FFFFFF"><b>Aln Len</b></td>
+       <td bgcolor="#FFFFFF"><b>Str Len</b></td>
+       <td bgcolor="#FFFFFF"><b>Seq Len</b></td>
+
+       <% if @job.Type =~ /domthreader/ %>
+         <td bgcolor="#FFFFFF"><b>Domain Start</b></td>
+         <td bgcolor="#FFFFFF"><b>Domain End</b></td>
+         <td bgcolor="#FFFFFF"><b>Domain Code</b></td>
+       <% end %>
+
+        <td bgcolor="#FFFFFF"><b>View Alignment</b></td>
+       <% if @job.Type !~ /domthreader/ %>
+         <td bgcolor="#FFFFFF"><b>SCOP Codes</b></td>
+         <td bgcolor="#FFFFFF"><b>CATH Codes</b></td>
+       <% end %>
+       <td bgcolor="#FFFFFF"><b>Structure</b></td>
+       <td bgcolor="#FFFFFF"><b>CATH Entry</b></td>
+     </tr>
+      <% end
+
+        printed = 1 %>
+        <tr style="padding: 3px; background: <%= cycle('#EEEEEE','#FFFFFF')%>">
+       <%  entries.each_with_index do |entry, index|
+          if index == 9 && @job.Type !~ /domthreader/ %>
+          <td style="background: #FFFFFF">
+          <% aln_string = ""
+            ann_string = ""
+           if @job.Type =~ /genthreader$/
+                   @annotation_copy.each do |anno_state|
+                     if anno_state.status_class == 49
+                         if(anno_state.content_name =~ /.+_(\d+)\.aln/)
+                             name_number = $1
+                             if name_number =~ /^#{line_count.to_s}$/
+                               aln_string = url_for(:controller => "bio_serf", :action => "getresultattached", :id => anno_state.id)
+                  
+                             end
+                         end
+                     end
+                  end
+
+                  @annotation_copy.each do |anno_state|
+                     if anno_state.status_class == 48
+                         if(anno_state.content_name =~ /.+_(\d+)\.ann/)
+                             name_number = $1
+                             if name_number =~ /^#{line_count.to_s}$/
+                               ann_string = url_for(:controller => "bio_serf", :action => "getresultattached", :id => anno_state.id)
+                             end
+                          end
+                     end
+                   end
+                 end %>              
+         <input class="form_input" type="button" onClick="loadNewAlignment('<%= aln_string  %>','<%= ann_string %>', '<%= entry %>');" value="Display <%= entry %> Alignment" />
+         </td>
+          <% @table_rows[entry] = "TRUE"
+             pdb_code = entry.chop
+             pdb_code = entry.chop
+         %>
+          <td><a href="http://scop.mrc-lmb.cam.ac.uk/scop/pdb.cgi?pdb=<%= pdb_code %>">Search SCOP for <%= pdb_code %></a></td>
+          <td><a href="http://www.cathdb.info/pdb/<%= pdb_code.chop %>">Search CATH for <%= pdb_code.chop %></a></td>
+          <td style="background: #FFFFFF"><a href="http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=<%= pdb_code.chop %>"><img src="http://www.cathdb.info/version/latest/molscript/<%= pdb_code %>/M" alt="pdbImage" class="pdb_image" /></a></td>
+          <td><a href="http://bioinf.cs.ucl.ac.uk/function/?code=<%= pdb_code %>" target="_blank">CATH Summary</a></td>
+      <% elsif index == 11 && @job.Type =~ /domthreader/ %>
+          <td><a href="http://www.cathdb.info/domain/<%= entry %>"><%= entry %></a></td>
+          <td style="background: #FFFFFF">
+            <% aln_string = ""
+               ann_string = ""
+            
+                   @annotation_copy.each do |anno_state|
+                     if anno_state.status_class == 49
+                         if(anno_state.content_name =~ /.+_(\d+)\.aln/)
+                             name_number = $1
+                             if name_number =~ /^#{line_count.to_s}$/
+                             aln_string = url_for(:controller => "bio_serf", :action => "getresultattached", :id => anno_state.id)
+                             end
+                          end
+                     end
+                   end
+
+                @annotation_copy.each do |anno_state|
+                     if anno_state.status_class == 48
+                         if(anno_state.content_name =~ /.+_(\d+)\.ann/)
+                             name_number = $1
+                             if name_number =~ /^#{line_count.to_s}$/
+                               ann_string = url_for(:controller => "bio_serf", :action => "getresultattached", :id => anno_state.id)
+                             end
+                         end
+                     end
+                   end %>
+          <input class="form_input" type="button" onClick="loadNewAlignment('<%= aln_string  %>','<%= ann_string %>', '<%= entry %>');" value="Display <%= entry %> Alignment" />
+          </td>
+          <% @table_rows[entry] = "TRUE"
+             pdb_code = entry.chop
+             pdb_code = pdb_code.chop
+             if @job.Type =~ /domthreader/
+               pdb_code = pdb_code.chop
+             end %>
+          <!--<td><a href="http://scop.mrc-lmb.cam.ac.uk/scop/pdb.cgi?pdb=<%= pdb_code %>">Search SCOP for <%= pdb_code %></a></td>-->
+          <td style="background: #FFFFFF"><a href="http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=<%= pdb_code %>"><img src="http://www.cathdb.info/version/latest/molscript/<%= entry %>/M" alt="pdbImage" class="pdb_image" /></a></td>
+          <td><a href="http://bioinf.cs.ucl.ac.uk/function/?code=<%= entry %>" target="_blank">CATH Summaryk</a></td>
+         <% else
+             if entry =~ /CERT/ %>
+            <td bgcolor="#00f000"><%= entry %></td>
+          <% elsif entry =~ /HIGH/ %>
+            <td bgcolor="#00f000"><%= entry %></td>
+          <% elsif entry =~ /MEDIUM/ %>
+            <td bgcolor="#ffaa00"><%= entry %></td>
+          <% elsif entry =~ /LOW/ %>
+            <td bgcolor="#f00000"><%= entry %></td>
+          <% elsif entry =~ /GUESS/ %>
+            <td bgcolor="#ff0000"><%= entry %></td>
+          <% else %>
+            <td><%= entry %></td>
+          <% end
+            end
+         end %>
+    </tr>
+    <% end
+
+       line_count+=1
+   end %>
+
+</table>
+<%  if(printed == 0) %>
+     <h2>There were no significant results for your sequence.</h2>
+   <% end %>
+<hr />
+
+<h3>Displaying only results rated MEDIUM confidence or better. <a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => log_result.id) %>">Click to download full results</a>.</h3>
+<h3>Click to <a href="http://bioinf.cs.ucl.ac.uk/genthreader_output/<%= @job.id  %>.gen.html">view full results in machine printable format</a></h3>
+
+
+</form>

@@ -1,0 +1,31 @@
+<table>
+<%
+  lipid_results_url = ""
+  @job_results.each do |job_state|
+    if (job_state.status_class == 46)
+      lipid_results_url= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id)
+    end
+  end
+
+ @job_results.each do |job_state|
+  if (job_state.status_class == 44) %>
+    <tr><td><h1>MEMPACK predicted fewer than 2 helices, no packing could be predicted</h1></td></tr>
+    <tr><td><a href="<%= lipid_results_url %>">Click here for the lipid exposure data</a></td></tr>
+  <%  end
+
+  if (job_state.status_class == 52) %>
+    <tr><td><h1>MEMPACK Produced no helix contacts</h1></td></tr>
+    <tr><td><a href="<%= lipid_results_url %>">Click here for the lipid exposure data</a></td></tr>
+  <% end
+
+end %>
+
+
+    <% @job_results.each do |job_state|
+     if (job_state.status_class == 43) %>
+        <tr class="form_subtitle"><td><h4>MEMPACK Cartoon</h4></td></tr>
+        <tr><td><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>"><img class="thumbnail" src="<%= url_for(:controller => "bio_serf", :action => "getthumbnail", :id => job_state.thumbnails.first.id) %>" /></a></td></tr>
+        <tr><td>Graph indicates the predicted transmembrane helix or helices with interactions. Helix residues are indicated as the coloured circular nodes. Interactions between residues are indicated by edges. Helices are oriented to maximise the number of residues with predicted interactions which face one another.</td></tr>
+   <% end
+   end %>
+</table>

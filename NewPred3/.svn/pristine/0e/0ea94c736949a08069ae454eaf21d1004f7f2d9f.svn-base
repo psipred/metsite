@@ -1,0 +1,400 @@
+<% if (!@job_results)%>
+      No Job Status Updates yet...<br />
+<% #TODO: remove extraneous code dereferencing %>
+<% end %>
+
+<% links="" %>
+<% results_copy = results %>
+
+ <% tot_GOa = @hOBJ["PREDFULL"].length %>
+
+ <table width="720px">
+  <!-- "Strict" GO term table BEGIN-->
+  <!-- <tr><td bgcolor="#eeeeee" class="border_bl"><b>Strict Gene Ontology Predictions</b><br/></td></tr>
+
+  <%
+  @print_results = 1
+  hPred = @hOBJ["PREDSTRICT"]
+
+  hPred.keys.each do | go |
+
+    if hPred[go]["id"] =~ /No\s+terms\s+predicted/
+      @print_results = 0
+    end
+  end %>
+
+  <% if(@print_results == 1) %>
+  <tr><td>
+      <table class="tablesorter" id="ffpredTable0"  width="100%" cellspacing="0" cellpadding="2">
+       <thead>
+        <tr>
+          <th align="center">GO term</th>
+           <th width="20%" align="center">Name</th>
+           <th align="center">Type</th>
+           <th width="10%" align="right">Prob</th>
+           <th width="15%" align="right">Reliable SVM</th>
+        </tr>
+      <%#*</thead>%>
+      <tbody>
+      
+      <% hPred = @hOBJ["PREDSTRICT"] %>
+      <% hPred.sort_by { |k, v| v["score"] }.reverse.each do | k | %>
+        <% hTmp=k[1]
+        if hTmp["rl"] =~ /H/ %>
+        <tr>
+           <td align="center"><b><a href="http://amigo.geneontology.org/amigo/term/GO:<%= hTmp["id"]%>">GO:<%= hTmp["id"]%></a></b></td>
+           <td class="desc" width="45%"><%= hTmp["desc"]%></td>
+           <td class="desc" align="center"><%= hTmp["domain"]%></td>
+           <td align="center"><%= hTmp["score"]%></td>
+           <td align="center"><%= hTmp["rl"]%></td>
+        </tr>
+        <% end %>
+       <% end %>
+
+        <% hPred.sort_by { |k, v| v["score"] }.reverse.each do | k | %>
+        <% hTmp=k[1]
+        if hTmp["rl"] =~ /L/ %>
+        <tr bgcolor="#ffdddd">
+           <td align="center"><b><a href="http://amigo.geneontology.org/amigo/term/GO:<%= hTmp["id"]%>">GO:<%= hTmp["id"]%></a></b></td>
+           <td class="desc" width="45%"><%= hTmp["desc"]%></td>
+           <td class="desc" align="center"><%= hTmp["domain"]%></td>
+           <td align="center"><%= hTmp["score"]%></td>
+           <td align="center"><%= hTmp["rl"]%></td>
+        </tr>
+        <% end %>
+       <% end %>
+        </tbody>
+      </table>
+      
+      <p>These prediction terms represent terms predicted where SVM training includes assigned GO terms across all evidence code types. SVM reliability is regarded as High (H) when MCC, sensitivity, specificity and precision are jointly above a given threshold.
+        otherwise Reliability is indicated as Low (L). </p>
+  
+ </td></tr>
+  <% else %>
+  <tr><td><h2>No GO terms predicted for this sequence</h2></td></tr>
+  <% end %> -->
+  <!-- "Strict" GO term table END-->
+
+   <!-- "Full" GO term table BEGIN-->
+  <%
+  #TODO: MAKE THIS TABLE WRITING IT'S OWN CLASS IN THE LAYOUTS AT SOME POINT
+
+  @print_results = 1
+  hPred = @hOBJ["PREDFULL"]
+
+  hPred.keys.each do | go |
+
+    if hPred[go]["id"] =~ /No\s+terms\s+predicted/
+      @print_results = 0
+    end
+  end %>
+
+  <% if(@print_results == 1) %>
+  <tr><td bgcolor="#eeeeee" class="border_bl"><b>Biological Process Predictions</b><br/></td></tr>
+  <tr><td>
+
+       <table class="tablesorter" id="ffpredTable1"  width="100%" cellspacing="0" cellpadding="2">
+       <thead>
+        <tr>
+          <th align="center">GO term</th>
+           <th width="20%" align="center">Name</th>
+           <th width="10%" align="right">Prob</th>
+           <th width="15%" align="right">SVM Reliability</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% hPred = @hOBJ["PREDFULL"] %>
+      <% hPred.sort_by { |k, v| v["score"] }.reverse.each do | k | %>
+        <% hTmp=k[1]
+        if hTmp["rl"] =~ /H/ && hTmp["domain"] =~ /BP/%>
+        <tr>
+           <td align="center"><b><a href="http://amigo.geneontology.org/amigo/term/GO:<%= hTmp["id"]%>">GO:<%= hTmp["id"]%></a></b></td>
+           <td class="desc" width="45%"><%= hTmp["desc"]%></td>
+           <td align="center"><%= hTmp["score"]%></td>
+           <td align="center"><%= hTmp["rl"]%></td>
+        </tr>
+        <% end %>
+       <% end %>
+
+        <% hPred.sort_by { |k, v| v["score"] }.reverse.each do | k | %>
+        <% hTmp=k[1]
+        if hTmp["rl"] =~ /L/ && hTmp["domain"] =~ /BP/ %>
+        <tr class="notsafe">
+           <td align="center"><b><a href="http://amigo.geneontology.org/amigo/term/GO:<%= hTmp["id"]%>">GO:<%= hTmp["id"]%></a></b></td>
+           <td class="desc" width="45%"><%= hTmp["desc"]%></td>
+           <td align="center"><%= hTmp["score"]%></td>
+           <td align="center"><%= hTmp["rl"]%></td>
+        </tr>
+        <% end %>
+       <% end %>
+        </tbody>
+      </table>
+
+  </td></tr>
+  <tr><td> <br /></td></tr>
+  <tr><td bgcolor="#eeeeee" class="border_bl"><b>Molecular Function Predictions</b><br/></td></tr>
+  <tr><td>
+
+       <table class="tablesorter" id="ffpredTable2"  width="100%" cellspacing="0" cellpadding="2">
+       <thead>
+        <tr>
+          <th align="center">GO term</th>
+           <th width="20%" align="center">Name</th>
+           <th width="10%" align="right">Prob</th>
+           <th width="15%" align="right">SVM Reliability</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% hPred = @hOBJ["PREDFULL"] %>
+      <% hPred.sort_by { |k, v| v["score"] }.reverse.each do | k | %>
+        <% hTmp=k[1]
+        if hTmp["rl"] =~ /H/ && hTmp["domain"] =~ /MF/%>
+        <tr>
+           <td align="center"><b><a href="http://amigo.geneontology.org/amigo/term/GO:<%= hTmp["id"]%>">GO:<%= hTmp["id"]%></a></b></td>
+           <td class="desc" width="45%"><%= hTmp["desc"]%></td>
+           <td align="center"><%= hTmp["score"]%></td>
+           <td align="center"><%= hTmp["rl"]%></td>
+        </tr>
+        <% end %>
+       <% end %>
+
+        <% hPred.sort_by { |k, v| v["score"] }.reverse.each do | k | %>
+        <% hTmp=k[1]
+        if hTmp["rl"] =~ /L/ && hTmp["domain"] =~ /MF/ %>
+        <tr class="notsafe">
+           <td align="center"><b><a href="http://amigo.geneontology.org/amigo/term/GO:<%= hTmp["id"]%>">GO:<%= hTmp["id"]%></a></b></td>
+           <td class="desc" width="45%"><%= hTmp["desc"]%></td>
+           <td align="center"><%= hTmp["score"]%></td>
+           <td align="center"><%= hTmp["rl"]%></td>
+        </tr>
+        <% end %>
+       <% end %>
+        </tbody>
+      </table>
+
+  </td></tr>
+  <tr><td> <br /></td></tr>
+  <tr><td bgcolor="#eeeeee" class="border_bl"><b>Cellular Component Predictions</b><br/></td></tr>
+  <tr><td>
+
+       <table class="tablesorter" id="ffpredTable3"  width="100%" cellspacing="0" cellpadding="2">
+       <thead>
+        <tr>
+          <th align="center">GO term</th>
+           <th width="20%" align="center">Name</th>
+           <th width="10%" align="right">Prob</th>
+           <th width="15%" align="right">SVM Reliability</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% hPred = @hOBJ["PREDFULL"] %>
+      <% hPred.sort_by { |k, v| v["score"] }.reverse.each do | k | %>
+        <% hTmp=k[1]
+        if hTmp["rl"] =~ /H/ && hTmp["domain"] =~ /CC/%>
+        <tr>
+           <td align="center"><b><a href="http://amigo.geneontology.org/amigo/term/GO:<%= hTmp["id"]%>">GO:<%= hTmp["id"]%></a></b></td>
+           <td class="desc" width="45%"><%= hTmp["desc"]%></td>
+           <td align="center"><%= hTmp["score"]%></td>
+           <td align="center"><%= hTmp["rl"]%></td>
+        </tr>
+        <% end %>
+       <% end %>
+
+        <% hPred.sort_by { |k, v| v["score"] }.reverse.each do | k | %>
+        <% hTmp=k[1]
+        if hTmp["rl"] =~ /L/ && hTmp["domain"] =~ /CC/ %>
+        <tr class="notsafe">
+           <td align="center"><b><a href="http://amigo.geneontology.org/amigo/term/GO:<%= hTmp["id"]%>">GO:<%= hTmp["id"]%></a></b></td>
+           <td class="desc" width="45%"><%= hTmp["desc"]%></td>
+           <td align="center"><%= hTmp["score"]%></td>
+           <td align="center"><%= hTmp["rl"]%></td>
+        </tr>
+        <% end %>
+       <% end %>
+        </tbody>
+      </table>
+      
+      <p>These prediction terms represent terms predicted where SVM training includes assigned GO terms across all evidence code types. SVM reliability is regarded as High (H) when MCC, sensitivity, specificity and precision are jointly above a given threshold.
+        otherwise Reliability is indicated as Low (L). </p>
+
+  </td></tr>
+
+  <% else %>
+  <tr><td><h2>No GO terms predicted for this sequence</h2></td></tr>
+  <% end %>
+  <!-- "Full" GO term table END-->
+
+ <tr><td></td></tr>
+
+  <!--Sequence schematic image BEGIN -->
+  <% @job_results.each do |job_state| %>
+  <% if (job_state.status_class == 39 )%>
+  <tr><td bgcolor="#eeeeee" class="border_bl"><b>Sequence Feature Map</b><br/></td></tr>
+  <tr><td><p>Position dependent feature predictions are mapped onto the sequence schematic shown below. The line height
+             of the Phosphorylation and Glycosylation features reflects the confidence of the residue prediction.</p></td></tr>
+  <tr><td align="center"><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>"><img style="border: 1px;" src="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>" /></a>
+  </td></tr>
+  <%  end %>
+<% end %>
+  <!--Sequence schematic image END-->
+
+  <!--Annotated Sequence BEGIN -->
+  <tr><td bgcolor="#eeeeee" class="border_bl"><b>Amino Acid Map</b><br/></td></tr>
+  <tr><td><p>Feature predictions are colour coded onto the sequence according to the sequence feature key shown below.<br />NOTE that for now, FFPred2 uses disorder features calculated by DISOPRED2, so this map may have differences to the one shown in the 'Summary' tab.</p>
+      <table class="seq" cellspacing="0" cellpadding="0" border="0" >
+           <% i=1 %>
+           <% seq = @hOBJ["seq"] %>
+           <% seq_class = @hOBJ["seq_class"] %>
+           <% seq.each do | chunk | %>
+           <tr>
+             <td align="right" class="numl"><b><font size="1"><%= i %></font></b></td>
+             
+               <% aa = chunk.split(//) %><% aa.each_with_index do | residue, index | %>
+               <td colspan="3"   class="seq"><% position =index+i-1 %><font class="<%= seq_class[position] %>" size="1"><%= residue %></font></td><% end %>
+             
+             <td align="left" class="numr"><b><font size="1"><%= i+49 %></font></b></td>
+           </tr>
+              <% i += 50 %>
+            <% end %>
+          </table>
+         </td>
+        </tr>
+        <tr>
+          <td>
+           <br/><br/>
+           <table width="100%">
+             <tr>
+              <th class="th" align="left">KEY</th>
+              <th class="th">Helix</th>
+              <th class="th">Sheet</th>
+              <th class="th">Coil</th>
+              <th class="th">Phosphorylated</th>
+              <th class="th">N/O Glycosylated</th>
+              <th class="th">Phosphorylated + Glycosylated</th>
+             </tr>
+             <tr>
+              <th align="left" class="th">Ordered</th>
+              <td class="key" align="center"><span class="H---">M</span></td>
+              <td class="key" align="center"><span class="E---">L</span></td>
+              <td class="key" align="center"><span class="C---">E</span></td>
+              <td class="key" align="center"><span class="C-P-">Q</span></td>
+              <td class="key" align="center"><span class="C--G">N</span></td>
+              <td class="key" align="center"><span class="C-PG">S</span></td>
+            </tr>
+            <tr>
+              <th align="left" class="th">Disordered</th>
+              <td class="key" align="center"><span class="HD--">K</span></td>
+              <td class="key" align="center"><span class="ED--">E</span></td>
+              <td class="key" align="center"><span class="CD--">R</span></td>
+              <td class="key" align="center"><span class="CDP-">Q</span></td>
+              <td class="key" align="center"><span class="CD-G">N</span></td>
+              <td class="key" align="center"><span class="CDPG">T</span></td>
+           </tr>
+        </table>
+  </td></tr>
+
+    <!--Annotated Sequence END -->
+
+  <!--Topology Image BEGIN-->
+  <% @job_results.each do |job_state| %>
+  <% if (job_state.status_class == 40 )%>
+  <tr><td bgcolor="#eeeeee" class="border_bl"><b>Predicted Transmembrane Topology</b><br/></td></tr>
+  <tr><td align="center"><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>"><img style="border: 1px;" src="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>" /></a></td></tr>
+
+  <%  end %>
+<% end %>
+  <!--Topology Image END-->
+
+  <!--AA composition BEGIN-->
+  <tr><td bgcolor="#eeeeee" class="border_bl"><b>Amino Acid Composition (percentages)</b><br/></td></tr>
+  <tr><td align="center">
+      <table cellspacing="0" class="aa" align="center">
+         <tr>
+           <% aa = @hOBJ["AA"] %>
+           <% aa.keys.sort.each do |residue| %>
+           <% tempy = aa[residue] %>
+
+           <th class="<%= tempy["col"] %>">
+              <%= residue %>
+           </th>
+        <% end %>
+        </tr>
+        <tr>
+        <% aa.keys.sort.each do |residue| %>
+          <td class="<%= aa[residue]["col"] %>" align="center">
+               &nbsp; <%= aa[residue]["val"] %> &nbsp;
+           </td>
+        <% end %>
+        </tr>
+       </table>
+  </td></tr>
+<tr><td><b>Significance Key</b></td></tr>
+   <tr><td align="center">
+        <table class="signifkey" align="center" cellpadding="2" cellspacing="0">
+        <tr>
+        <td><b>low</b></td>
+        <td colspan="9">&nbsp;</td>
+        <td align="right"><b>high</b></td>
+        </tr>
+        <tr>
+        <td></td>
+        <td class="signif1n">p &lt; 0.01</td>
+        <td class="signif2n">p &lt; 0.02</td>
+        <td class="signif5n">p &lt; 0.05</td>
+        <td class="signif10n">p &lt; 0.1</td>
+        <td>p &gt;= 0.1</td>
+        <td class="signif10p">p &lt; 0.1</td>
+        <td class="signif5p">p &lt; 0.05</td>
+        <td class="signif2p">p &lt; 0.02</td>
+        <td class="signif1p">p &lt; 0.01</td>
+        <td></td>
+        </tr>
+        <tr>
+        <td colspan="11">Significance p value is calculated using the Z score of the percent amino acid composition</td>
+        </tr>
+       </table>
+
+   </td></tr>
+  <!--AA composition END-->
+
+  <!--Global Features BEGIN-->
+  <tr><td bgcolor="#eeeeee" class="border_bl"><b>Global Features</b><br/></td></tr>
+  <tr><td><p>Global features are calculated directly from sequence. Localisation values are predicted by the Psort algorithm and reflect the relative likelihood of the protein occupying different cellular localisations. The bias column is highlighted according to the significance of the feature value calculated from Z score of the feature.</p></td></tr>
+  <tr><td align="center">
+    <table class="go" width="90%" cellspacing="0" cellpadding="2">
+    <tr bgcolor="#92aec7">
+       <td><b>Feature Name</b></td>
+       <td align="right"><b>Value</b></td>
+       <td align="center"><b>Bias</b></td>
+   </tr>
+   <% sf = @hOBJ["SF"] %>
+   <% sf.keys.sort.each do | feat | %>
+          <tr>
+            <td><b><%= feat %></b></td>
+            <td align="right">
+            <%= sf[feat]["val"] %>
+            </td>
+            <td class="<%= sf[feat]["col"] %>">
+             &nbsp;&nbsp;&nbsp;
+            </td>
+         </tr>
+   <% end %>
+
+  <% ps = @hOBJ["PS"] %>
+  <% ps.keys.sort.each do | feat | %>
+
+      <% if ps[feat]["val"].to_f > 0.000 %>
+          <tr>
+           <td><b><%= feat %></b></td>
+           <td align="right"><%= ps[feat]["val"] %></td>
+           <td>&nbsp;&nbsp;&nbsp;</td>
+         </tr>
+       <% end %>
+   <% end %>
+   </table>
+
+    </td></tr>
+  <!--Global Features END-->
+
+</table>
+

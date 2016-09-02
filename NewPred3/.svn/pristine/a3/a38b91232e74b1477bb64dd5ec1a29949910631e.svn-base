@@ -1,0 +1,23 @@
+<h1>Editing configuration</h1>
+<h2>Ensure that all paths end with / and have no trailing white space</h2>
+
+<p><%= link_to 'Show', :action => 'show', :id => @configuration %> |
+<%= link_to 'Back', :action => 'list' %></p>
+
+<%= form_tag("/job_configurations/update/"+@configuration.id.to_s, :multipart => true) do %>
+  
+  <%= render :partial => 'form' %>
+
+  <br>Note: ignore fields below if you don't want to add a new key/value pair<br>
+  <p><label for="newkey">New Key</label><br/>
+<%= text_field_tag('newkey', 'new key', :class => "form_input" ) %></p>
+
+  <p><label for="newvalue">New Value</label><br/>
+<%= text_field_tag('newvalue', 'new value', :size => 80, :class => "form_input" ) %></p>
+  <br>
+
+  <p><%= submit_tag 'Edit', :class => "form_input" %></p>
+<% end %>
+
+<p><%= link_to 'Show', :action => 'show', :id => @configuration %> |
+<%= link_to 'Back', :action => 'list' %></p>

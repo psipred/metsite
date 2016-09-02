@@ -1,0 +1,25 @@
+<table>
+<% lines = log_result.data.split(/\n/)
+  lines.each_with_index do |line, index| %>
+    <tr style="background: <%= cycle(bgcolor,'#fff') %>;">
+    <% entries = line.split(/\t/)
+    entries.each_with_index do |entry, index2|
+           if index == 0
+           if index2 != 2 %>
+        <td><h3><%= entry %></h3></td>
+        <% end
+        else
+             if index2 == 1
+                 if entry =~ /^(.{4})/ %>
+              <td class="alignment" ><a href="http://www.ebi.ac.uk/thornton-srv/databases/cgi-bin/pdbsum/GetPage.pl?pdbcode=<%= $1 %>&template=main.html"><%= entry %></a></td>
+              <% end
+             elsif index2 == 2 %>
+            <!--<td class="alignment" ><a href="javascript:newWindow('http://bioinfadmin.cs.ucl.ac.uk:8000/servlet/SSEAgraphicsservlet?secstruct=<%= entry %>',195,515);">Show SSEA</a></td>-->
+          <% else %>
+            <td class="alignment" ><%= entry %></td>
+          <% end
+           end
+       end %>
+    </tr>
+ <% end %>
+</table>

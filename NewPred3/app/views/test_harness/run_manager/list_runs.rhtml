@@ -1,0 +1,28 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+
+<table>
+  <tr>
+  <% for column in TestRun.content_columns %>
+    <th><%= link_to column.human_name, { :page => @testrun_pages.current, 
+        :order_by => "#{column.name} ASC"} %></th>
+  <% end %>
+  </tr>
+  
+<% for testrun in @testruns %>
+  <tr>
+  <% for column in TestRun.content_columns %>
+    <td><%=h  testrun.send(column.name) %></td>
+  <% end %>
+  <td><%= link_to "Show", { :action => 'show_run', :id => testrun.id }%> </td>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @testrun_pages.current.previous, :order_by => @page_runs_by } if @testrun_pages.current.previous %>
+<%= link_to 'Next page', { :page => @testrun_pages.current.next, :order_by => @page_runs_by } if @testrun_pages.current.next %> 
+
+<br>
+
+<%= link_to 'New run', :action => 'create_run' %>

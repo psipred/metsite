@@ -1,0 +1,9 @@
+<table>
+<tr class="form_subtitle"><td><h4>MakeTDB  Downloads</h4></td></tr>
+<%  results.each do |job_state|
+     if job_state.status_class == 53 %>
+     <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">Download the TDB file</a></h4>
+       </td></tr>
+  <% end
+   end %>
+</table>

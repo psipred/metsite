@@ -1,0 +1,26 @@
+  <table>
+<% results_copy = results
+  results_copy.each do |job_state|
+  if(job_state.status_class == 8 || job_state.status_class == 76 || job_state.status_class == 78)
+    @alignments[job_state.content_name] = "TRUE"
+  end
+end
+
+#print out the genthreader/domthreader results table first and keep a record of which lines you've printed
+   results.each do |job_state|
+
+     if job_state.status_class == 9 && gen_control == 0 %>
+    <tr class="form_subtitle"><td><h4>GenTHREADER Scores (alignments displayed against the first of the input sequences)</h4></td></tr>
+    <tr><td><%= render :partial => 'layouts/genthreader_result_new',
+          :locals => {:log_result => job_state, :result_filter => @result_filter, :bgcolor => "#ccc",:gen_control => 0} %></td></tr>
+    <% elsif (job_state.status_class == 77 &&  gen_control == 1) %>
+    <tr class="form_subtitle"><td><h4>pGenTHREADER Scores (alignments displayed against the first of the input sequences)</h4></td></tr>
+    <tr><td><%= render :partial => 'layouts/genthreader_result_new',
+          :locals => {:log_result => job_state, :result_filter => @result_filter, :bgcolor => "#ccc",:gen_control => 1} %></td></tr>
+  <% elsif job_state.status_class == 10 && gen_control == 2 %>
+    <tr class="form_subtitle"><td><h4>DomTHREADER Scores</h4></td></tr>
+    <tr><td><%= render :partial => 'layouts/genthreader_result_new',
+          :locals => {:log_result => job_state, :result_filter => @result_filter, :bgcolor => "#ccc",:gen_control => 2} %></td></tr>
+  <% end
+   end %>
+</table>

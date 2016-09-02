@@ -1,0 +1,15 @@
+            <!--[if IE 6]>
+			<style type="text/css">
+			#content
+			{
+					position: relative;
+					top: 0em;
+					left: 0em;
+			}
+			</style>
+			<![endif]-->
+
+			<div id="content" class="column">
+
+				<!--TYPO3SEARCH_begin-->
+				<!-- ###CONTENT### begin -->

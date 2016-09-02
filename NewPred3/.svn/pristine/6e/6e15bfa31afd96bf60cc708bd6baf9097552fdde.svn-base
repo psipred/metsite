@@ -1,0 +1,26 @@
+<h1>TestHarness::ReportManager#list_reports</h1>
+<p>Find me in app/views/test_harness/report_manager/list_reports.rhtml</p>
+<table>
+  <tr>
+  <% for column in Report.content_columns %>
+    <th><%= link_to column.human_name, { :page => @report_pages.current, 
+        :order_by => "#{column.name} ASC"} %></th>
+  <% end %>
+  </tr>
+  
+<% for report in @reports %>
+  <tr>
+  <% for column in Report.content_columns %>
+    <td><%=h  report.send(column.name) %></td>
+  <% end %>
+  <td><%= link_to "Show", { :action => 'show_report', :id => report.id }%> </td>
+  <td><%= link_to "Chart", { :action => 'show_report_overview', :id => report.id } %> </td>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @report_pages.current.previous, :order_by => @reports_by } if @report_pages.current.previous %>
+<%= link_to 'Next page', { :page => @report_pages.current.next, :order_by => @reports_by } if @report_pages.current.next %> 
+
+<br>
+
+<%= link_to 'New report', :action => 'new_report' %>

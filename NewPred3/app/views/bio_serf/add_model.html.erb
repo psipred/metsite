@@ -1,0 +1,18 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+
+<h1>Add Model to <%= @job.name%> </h1>
+
+<%= form_tag("/bio_serf/do_add_model", :id => @job.id, :multipart=>true) do %>
+
+  <p><label for="model_index"></label><br />
+  <%= text_field_tag 'model_index', "#{@job.request_results.count(:conditions => "status_class = 6") + 1}" %></p>
+
+  <p><label for="model">Model</label><br />
+  <%= file_field_tag("model", :class => 'textinput') %>
+  <br>
+  <%= submit_tag "Upload", :class => "form_input" %>
+
+<% end %>

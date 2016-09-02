@@ -1,0 +1,16 @@
+<head>
+  <title>Test Entry for <%= @entry.name %></title>
+  <script src="../../../javascripts/Jmol.js" type="text/javascript"></script>
+</head>
+<body>
+  <strong>Comment: </strong> <%= @entry.comment %><br> 
+  <strong>Sequence: </strong> <%= @entry.sequence %><br>
+  <strong>Created At: </strong> <%- @entry.created_at %><br>
+  
+  <% @models.each do |model| %>
+             <%= render :partial => 'test_model',
+                          :locals => {:model => model, :bgcolor => "#ccc"} %>
+        <% end %>
+        
+<%= will_paginate @models%>
+</body>

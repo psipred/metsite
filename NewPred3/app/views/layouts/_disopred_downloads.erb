@@ -1,0 +1,38 @@
+<table>
+  <tr class="form_subtitle"><td><h4>Disopred Downloads</h4></td></tr>
+<% results.each do |job_state|
+     if (job_state.status_class == 25 )%>
+      <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">DISOPRED3 disorder prediction results in plain text format</a></h4></td></tr>
+   <%  end
+   end
+   results.each do |job_state|
+     if (job_state.status_class == 24 )%>
+        <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">DISOPRED3 disordered protein binding prediction results in plain text format</a></h4></td></tr>
+     <% end
+   end
+   results.each do |job_state|
+     if (job_state.status_class == 101 )%>
+        <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">Old DISOPRED2 disorder prediction results in plain text format</a></h4></td></tr>
+     <% end
+   end
+   results.each do |job_state|
+     if (job_state.status_class == 26 ) && (job_state.content_name =~ /\.blast\.gz/) %>
+      <tr><td><h4><a href="http://bioinf.cs.ucl.ac.uk/psipred_output/<%= job_state.content_name %>">Download PSI-BLAST output</a></h4></td></tr>
+  <%  end
+   end
+   results.each do |job_state|
+     if (job_state.status_class == 12 )
+       if job_state.content_name =~ /\.diso\./ %>
+         <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">Postscript version of the disopred graph</a></h4></td></tr>
+      <% end
+     end
+    end
+    results.each do |job_state|
+      if (job_state.status_class == 13 )
+       if job_state.content_name =~ /\.diso\./ %>
+         <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => "getresultattached", :id => job_state.id) %>">PDF version of the disopred graph</a></h4></td></tr>
+      <% end
+     end
+    end %>
+
+</table>

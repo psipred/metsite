@@ -1,0 +1,29 @@
+<HTML>
+<HEAD>
+  <META   NAME    = "Description"
+          CONTENT = "BioSerf Protein Structure Prediction Server" >
+
+  <META NAME="ROBOTS" CONTENT="NOARCHIVE">
+
+  <META name="Keywords" content="SECONDARY STRUCTURE PREDICTION MEMBRANE TRANSMEMBRANE MEMSAT SOFTWARE JONES UCL BIOINFORMATICS PREDICTION MODELING GenTHREADER PSIPRED FOLD RECOGNITION">
+
+  <TITLE>BioSerf Protein Structure Prediction Server</TITLE>
+</HEAD>
+<!--<tr>
+  <td COLSPAN="2" BGCOLOR="#ffffff">
+    <a HREF="http://bioinfadmin.cs.ucl.ac.uk"><img src="http://bioinfadmin.cs.ucl.ac.uk/graphics/bbg3.jpg" width='891' height='82' border='0' valign='middle'></a>
+  </td>
+</tr>-->
+
+<%= form_tag("/casp10submit_ts", :method => "get") do %>
+  <p>Job Name:</p>
+  <p><%= text_field_tag("name")%> </p>
+
+  <p>Sequence:</p>
+  <p><%= text_area_tag "seq", "", :size => "70x5"%></p>
+
+  <p>E-Mail Address:</p>
+  <p><%= text_field_tag("address")%> </p>
+
+  <%= submit_tag("Predict")%>
+<% end %>  

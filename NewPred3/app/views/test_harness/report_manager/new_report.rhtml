@@ -1,0 +1,15 @@
+<h1>TestHarness::ReportManager#new_report</h1>
+<p>Find me in app/views/test_harness/report_manager/new_report.rhtml</p>
+<% form_tag(:action => "do_create_report") do %>
+  <p>New Report Name:<br>
+  <%= text_field_tag("name", nil, :size => "75")%> </p><br>
+  <p>Description:<br>
+  <%= text_field_tag("description", nil, :size => "75")%> </p><br>
+  <p>Command line: <br>
+  <%= text_field_tag("binary", "/mnt/hgfs/pdbroot/software/tmalign/TMalign %1 %2", :size => "75") %></p><br>
+  <p>Reference Models Type:<br>
+  <%= select "new_report", "ref_model_type_id", ModelType.find(:all).collect { |p| [p.name, p.id ] } %></p><br>
+  <p>Comparison Model Types: <br>
+  <%= select "new_report", "model_types", ModelType.find(:all).collect { |p| [p.name, p.id ] }, {:multiple => true, :size => 5 }, {:multiple => true, :size => 5 } %> </p><br>
+  <%= submit_tag("Create Report")%>
+<% end %>

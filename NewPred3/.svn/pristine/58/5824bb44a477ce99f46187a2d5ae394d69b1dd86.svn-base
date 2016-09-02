@@ -1,0 +1,42 @@
+<table>
+  <tr class="form_subtitle"><td><h4>DomSerf Downloads</h4></td></tr>
+  <tr><td>
+<%
+  method = "getresultattached"
+  if @genome3d == 1
+    method = "getresultattachedgenome3d"
+  end
+  %>
+<%
+  domain_count = 0
+  results.each do |job_state|
+  if (job_state.status_class == 6)
+  	domain_count+=1%>
+                    <% if job_state.content_name =~ /^No model built/ %>
+                    <h4>BioSerf Result for job: <%= job_state.job_id %> : <%= job_state.content_name %></h4>
+                     <%  else %>
+                    <h4><a href="<%= url_for :controller => "bio_serf", :action => method, :id => job_state.id %>">Download the DomSerf domain model : <%= domain_count %></a></h4>
+                    <% end %>
+      <% end %>
+ 
+<% if (job_state.status_class == 95) %>
+
+                    <h4><a href="<%= url_for :controller => "bio_serf", :action => method, :id => job_state.id %>">PDB Chain Templates </a></h4>
+
+      <% end %>
+ 
+<% if (job_state.status_class == 96) %>
+                    
+                   <h4><a href="<%= url_for :controller => "bio_serf", :action => method, :id => job_state.id %>">CATH Domain Templates</a></h4>
+
+      <% end %>
+      
+      
+<% if (job_state.status_class == 97) %>
+                    
+                   <h4><a href="<%= url_for :controller => "bio_serf", :action => method, :id => job_state.id %>">PIR template alignment</a></h4>
+
+      <% end %>
+<% end %>
+</td></tr>
+</table>

@@ -1,0 +1,27 @@
+<h1>Displaying Configuration</h1>
+<p><%= link_to 'Edit', :action => 'edit', :id => @configuration %> |
+<%= link_to 'Back', :action => 'list' %></p>
+
+<% for column in JobConfiguration.content_columns %>
+  <p>
+    <b><%= column.human_name %>:</b> <%=h @configuration.send(column.name) %>
+  </p>
+<% end %>
+<% for entry in @entries %>
+  <p>
+    <b><%= entry.key%>:</b> <%=h entry.value %>
+  </p>
+<% end %>
+<p>
+<b>Servers:</b></p>
+<% for server in @servers %>
+  <p>
+    <b><%= server.name %>:</b> <%=h server.address %>
+  </p>
+<% end %>
+
+<p><b>YAMLed:</b></p>
+<pre><p><%= @entry_hash_yaml%></p></pre>
+
+<p><%= link_to 'Edit', :action => 'edit', :id => @configuration %> |
+<%= link_to 'Back', :action => 'list' %></p>

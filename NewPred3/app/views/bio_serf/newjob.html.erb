@@ -1,0 +1,15 @@
+<%= form_tag("/submit", :method => "get") do %>
+  <p><%= pretty_error_messages_for :job %></p>
+
+<p>Job Name:
+  <%= text_field_tag("name", "", :class => 'form_input')%> </p>
+
+  <p>Job Type:
+  <%= select_tag "job_type", "<option>BioSerf</option><option>mGenThreader</option><option>TestPred</option>"%></p>
+  <p>Sequence:
+  <%= text_area_tag "sequence", "", :size => "70x5"%></p>
+  <p>Configuration:<br>
+  <%= select "newjob", "configuration_id", JobConfiguration.find(:all).collect { |p| [p.name, p.id ] } %></p><br>
+
+  <p><%= submit_tag("Predict", :class => 'form_input')%></p>
+<% end %>

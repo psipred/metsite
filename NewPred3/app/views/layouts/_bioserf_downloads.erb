@@ -1,0 +1,14 @@
+<table>
+  <tr class="form_subtitle"><td><h4>BioSerf Downloads</h4></td></tr>
+  <tr><td>
+<% results.each do |job_state|
+  if (job_state.status_class == 6) %>
+                    <% if job_state.content_name =~ /^No model built/ %>
+                    <h4>BioSerf Result for job: <%= job_state.job_id %> : <%= job_state.content_name %></h4>
+                     <%  else %>
+                    <h4><a href="<%= url_for :controller => "bio_serf", :action => "getresultattached", :id => job_state.id %>">Download the BioSerf PDB  model</a></h4>
+                    <% end %>
+      <% end %>
+ <% end %>
+</td></tr>
+</table>

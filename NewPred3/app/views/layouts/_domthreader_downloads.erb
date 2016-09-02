@@ -1,0 +1,35 @@
+<table>
+<tr class="form_subtitle"><td><h4>pDomTHREADER Downloads</h4></td></tr>
+<%
+  method = "getresultattached"
+  if @genome3d == 1
+    method = "getresultattachedgenome3d"
+  end
+  %>
+<% results.each do |job_state|
+     if job_state.status_class == 10 %>
+     <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => method, :id => job_state.id) %>">Download the complete results table</a></h4></td></tr>
+     <% if @genome3d == 0 %>
+     <tr><td><h4><a href="http://bioinf.cs.ucl.ac.uk/genthreader_output/<%= @job.id  %>.dgen.html">View full results in machine printable format</a></h4></td></tr>
+     <% end %>
+  <% end
+   end
+
+experimental_printed = 0
+   results.each do |job_state|
+     if job_state.status_class == 51
+        if experimental_printed == 0
+       experimental_printed+=1
+        end
+        if job_state.content_name =~ /cert\.multialign/ %>
+     <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => method, :id => job_state.id) %>">Download realignment of the query sequence and the CERT confidence hits</a></h4></td></tr>
+     <% end
+        if job_state.content_name =~ /certhigh\.multialign/ %>
+     <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => method, :id => job_state.id) %>">Download realignment of the query sequence and the CERT and HIGH confidence hits</a></h4></td></tr>
+     <% end
+        if job_state.content_name =~ /all\.multialign/ %>
+      <tr><td><h4><a href="<%= url_for(:controller => "bio_serf", :action => method, :id => job_state.id) %>">Download realignment of the query sequence with all the hits</a></h4></td></tr>
+     <% end
+     end
+   end %>
+</table>

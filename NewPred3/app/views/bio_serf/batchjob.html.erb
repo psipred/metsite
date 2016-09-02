@@ -1,0 +1,13 @@
+<%= form_tag("/batchsubmit", :method => "get") do %>
+  <p>Job Root Name:
+  <%= text_field_tag("name")%> </p>
+
+  <p>Job Type:
+  <%= select_tag "job_type", "<option>BioSerf</option><option>mGenThreader</option><option>TestPred</option>NewPred<option></option>"%></p>
+  <p>Sequence Array (one per line):
+  <%= text_area_tag "sequence", "", :size => "70x5"%></p>
+  <p>Configuration:<br>
+  <%= select "newjob", "configuration_id", JobConfiguration.find(:all).collect { |p| [p.name, p.id ] } %></p><br>
+
+  <%= submit_tag("Batch Predict")%>
+<% end %>

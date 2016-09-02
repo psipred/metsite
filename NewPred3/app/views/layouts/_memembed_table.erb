@@ -1,0 +1,38 @@
+<table>
+<tr><td>
+    <% model_printed = 1
+      results.each do |job_state| %>
+        <% if (job_state.status_class == 6) %>
+                    <% if job_state.content_name =~ /^No model built/ 
+                        model_printed = 0 %>
+                        <h2>Memembed was not able to orient your protein. Perhaps it was globular and not a membrane protein</h2>
+                    <% else %>
+                        <%= render :partial => 'layouts/pdb_result', :locals => {:pdb_result => job_state, :bgcolor => "#ccc"} %>
+                    <% end %>
+         <% end %>
+     <% end %>
+</td></tr>
+<tr><td>Red represents the outer membrane lipid layer. Blue is the cytoplasmic layer.</td></tr>
+<% if model_printed == 1 %>
+<tr><td>This model has been oriented using
+<% @searchType.each do |type| %>
+	<% if type.value.to_i == 0 %>
+	the Genetic Algorithm option
+	<% elsif type.value.to_i == 1 %>
+	the Grid Search option
+	<% elsif type.value.to_i == 2 %>
+	the Direct Search option
+	<% elsif type.value.to_i == 3 %>
+	the repeated Genetic Algorithm option
+	<% end
+end %>	
+</td></tr>
+
+<% results.each do |job_state| %>
+      <% if (job_state.status_class == 98) %>
+         <tr><td>The model's Final Energy is: <%= job_state.data %></td></tr>
+      <% end %>
+<% end %>
+<% end %>
+
+</table>
