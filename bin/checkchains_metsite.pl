@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 # Routine ensures that the incoming pdb file has the chain ID specified
-# and then writes out a new pdb file with the residue numbers 
+# and then writes out a new pdb file with the residue numbers
 #
 
 use FileHandle;
@@ -32,10 +32,10 @@ my $hChainData = {};
 while(my $line = $fhInput->getline)
 {
 	$line_count++;
-	
+
 	if($line =~ /^ATOM/)
 	{
-		
+
 		my $chaintest = substr $line, 21, 1;
 		if($chaintest =~ /\s/)
 		{
@@ -76,12 +76,19 @@ foreach my $testchain (keys %$hChainData)
 		}
 	}
 }
-print $hChainData->{$chain}{LOWEST}."\n";
-
+if(exists $hChainData->{$chain}{LOWEST})
+{
+	print $hChainData->{$chain}{LOWEST}."\n";
+}
+else
+{
+	print "Chain not in \$hChaindata\n";
+}
 #now we can rewrite the pdb file
 $fhInput = new FileHandle($file, "r");
 my $tmp_pdb = $file;
 $tmp_pdb =~ s/\.pdb$/.tmp/;
+$tmp_pdb =~ s/\.input$/.tmp/;
 print $tmp_pdb."\n";
 my $fhOut = new FileHandle($tmp_pdb,"w");
 while(my $line = $fhInput->getline)
@@ -99,17 +106,17 @@ while(my $line = $fhInput->getline)
 		}
 		my $trailingchunk = $4;
 		$resNum =~ s/\s+//;
-		
+
 		my $chaintmp = $chainchunk;
 		$chaintmp =~ s/\s+//;
-		
+
 		my $subtractor = ($hChainData->{$chaintmp}{LOWEST})-1;
 		$resNum = $resNum-$subtractor;
 		my $formattedNum = sprintf("%4d", $resNum);
 		$line = $leadchunk.$chaintmp.$formattedNum.$trailingchunk."\n";
 	}
 	print $fhOut $line;
-	
+
 }
 $fhInput->close;
 $fhOut->close;
