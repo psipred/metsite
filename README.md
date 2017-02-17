@@ -56,7 +56,7 @@ run returnNetCut, keeping the atom choice the same, the second arg is a flag whi
 
 9)
 Take the float returned and use it as part of the input for met_pred
-runt Met Pred, (i,e: 0.182). Lower case metals this time! And provide a path for the data files
+run Met Pred, (i,e: 0.182). Lower case metals this time! And provide a path for the data files
 
 `> ./bin/MetPred 1IAR.pdb.DATA cu 0.182 1IAR_MetPred.pdb A ./data/`
 
