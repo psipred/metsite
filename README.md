@@ -65,3 +65,6 @@ As an alternatIve to steps 8 and 9 you can run the python script metpred.py whic
 wraps these two steps together. Basically you pass it the options the previous 2 commands need. Note that the classpath must have full canonical paths, and you must provide a location for the metpred binaries
 
 `python ./bin/metpred.py /Users/dbuchan/Code/metsite/src/org/ucl/conf/:/Users/dbuchan/Code/metsite/src/ CU 1 1IAR.pdb.DATA 1IAR_MetPred.pdb A ./bin/ ./data/`
+
+or the shell script MetPred_wrapper.sh
+`/opt/Code/metsite/bin/MetPred_wrapper.sh /opt/Code/metsite CU 1 1IAR.pdb.DATA 1IAR.pdb A`
