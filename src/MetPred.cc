@@ -370,6 +370,7 @@ int main(int argc, char* argv[]){
   /*************** READ IN PDB DATA ***************/
 
   string pdb = argv[1];
+  cout << pdb;
   pdb = pdb.substr(0,pdb.length()-5);
   name = pdb; // + ".pdb";
 
