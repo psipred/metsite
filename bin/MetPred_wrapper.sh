@@ -11,6 +11,4 @@ chain=$6
 output=`java -cp $path/src/org/ucl/conf/:$path/src returnNetCut $metal $fpr_choice`
 value=${output##*' '}
 lc=${metal,,}
-echo $value
-echo $lc
-`$path/bin/MetPred $seedsitedata $lc $value $pdb.MetPred $chain $path/data/`
+echo `$path/bin/MetPred $seedsitedata $lc $value $pdb.MetPred $chain $path/data/`

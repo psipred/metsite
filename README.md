@@ -39,10 +39,10 @@ Run dssp
 `> ./bin/dssp 1IAR.pdb 1IAR.dssp > 1IAR.dsspout`
 
 7)
-Run seed site find. You need to provide an ion from this list,
+Run seed site find. You need to provide an ion from this list (note the leading underscore)
 CU|CA|FE|ZN|MG|MN
 
-`> ./bin/seedSiteFind 1IAR.pdb CU 10 1IAR.pro 1IAR.dssp A`
+`> ./bin/seedSiteFind 1IAR.pdb _CU 10 1IAR.pro 1IAR.dssp A`
 
 
 8)
