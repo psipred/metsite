@@ -39,24 +39,24 @@ Run dssp
 `> ./bin/dssp 1IAR.pdb 1IAR.dssp > 1IAR.dsspout`
 
 7)
-Run seed site find. You need to provide an ion from this list (note the leading underscore)
-CU|CA|FE|ZN|MG|MN
+Run seed site find. You must use the chain A you tested for in step 1. You need to provide an ion from this list (note the leading underscore) CU|CA|FE|ZN|MG|MN
 
 `> ./bin/seedSiteFind 1IAR.pdb _CU 10 1IAR.pro 1IAR.dssp A`
 
 
 8)
-run returnNetCut, keeping the atom choice the same, the second arg is a flag which returns the value for the following FRP
-0 = 1%
-1 = 5%
-2 = 10%
-3 = 20%
+run returnNetCut, keeping the atom choice the same, the second arg is a flag which returns the value for the following FPR: 
+
+* 0 = 1%
+* 1 = 5%
+* 2 = 10%
+* 3 = 20%
 
 `java -cp 'src/org/ucl/conf/:src' returnNetCut CU 1`
 
 9)
 Take the float returned and use it as part of the input for met_pred
-run Met Pred, (i,e: 0.182). Lower case metals this time! And provide a path for the data files
+run Met Pred, (i,e: 0.182). Lower case metals this time! And provide a path for the data files and chain id
 
 `> ./bin/MetPred 1IAR.pdb.DATA cu 0.182 1IAR_MetPred.pdb A ./data/`
 
