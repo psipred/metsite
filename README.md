@@ -4,6 +4,13 @@
 2. uniref90 seq database prepared for BLAST+
 3. dssp. This is included in bin/ but you may need to download and compile the source
 
+# Installation
+
+> cd src/
+> make clean
+> make
+> make install
+
 # Example use
 
 1)
