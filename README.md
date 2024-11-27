@@ -4,6 +4,25 @@
 2. uniref90 seq database prepared for BLAST+
 3. dssp. This is included in bin/ but you may need to download and compile the source
 
+# Ansible installation
+
+First ensure that ansible is installed on your system, then clone the github
+repo
+
+% pip install ansible
+% git clone https://github.com/psipred/metsite.git
+% cd metsite/ansible_installer
+
+Next edit the the config_vars.yml to reflect where you would like metside and 
+any underlying data to be installed. You can choose a version of uniref but
+we recommend uniref90 for most accurate results.
+
+You can now run ansible as per
+
+% ansible-playbook -i hosts install.yml
+
+You can edit the hosts file to install metsite on one or more machines.
+
 # Installation
 
 `> cd src/`
