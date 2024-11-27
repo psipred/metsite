@@ -1,4 +1,4 @@
-- name: Install PSIPRED
+- name: Install metsite
   hosts: all
   roles:
     - blast
