@@ -1,0 +1,19 @@
+  - name: Check metsite is present
+    stat: path={{ app_location }}/metsite
+    register: metsite_exist
+
+  - name : Check out metsite from GIT
+    when: metsite_exist.stat.exists == False
+    git:
+      repo: https://github.com/psipred/metsite.git
+      dest: "{{ app_location }}/metsite"
+      clone: yes
+      force: yes
+
+  - name: make metsite components
+    when: metsite_exist.stat.exists == False
+    shell: "cd {{ app_location }}/metsite/src/; make"
+
+  - name: install metsite
+    when: metsite_exist.stat.exists == False
+    shell: "cd {{ app_location }}/metsite/src; make install"

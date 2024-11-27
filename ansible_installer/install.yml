@@ -1,0 +1,7 @@
+- name: Install PSIPRED
+  hosts: all
+  roles:
+    - blast
+    - metsite
+  vars_files:
+   - ./config_vars.yml
